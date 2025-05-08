@@ -1,10 +1,7 @@
 import { api } from "./apiClient"
-import type { User, UserProgress, UserPreferences } from "../types"
+import type { UserProgress, UserPreferences } from "../types"
 
-export const getUserProgress = async (): Promise<{
-  progress: UserProgress;
-  assessment_results: any[] 
-}> => {
+export const getUserProgress = async (): Promise<{ progress: UserProgress; assessment_results: any[] }> => {
   try {
     const response = await api.get("/users/progress")
     return response.data
@@ -14,9 +11,7 @@ export const getUserProgress = async (): Promise<{
   }
 }
 
-export const getUserPreferences = async (): Promise<{
-  preferences: UserPreferences
-}> => {
+export const getUserPreferences = async (): Promise<{ preferences: UserPreferences }> => {
   try {
     const response = await api.get("/users/preferences")
     return response.data
@@ -28,7 +23,7 @@ export const getUserPreferences = async (): Promise<{
 
 export const updateUserPreferences = async (
   preferences: Partial<UserPreferences>,
-): Promise<{ preferences: UserPreferences; message: string }> => {
+): Promise<{ preferences: UserPreferences }> => {
   try {
     const response = await api.put("/users/preferences", preferences)
     return response.data
@@ -38,11 +33,9 @@ export const updateUserPreferences = async (
   }
 }
 
-export const enrollInCourse = async (courseId: string): Promise<{
-  message: string
-}> => {
+export const enrollInCourse = async (courseId: string): Promise<any> => {
   try {
-    const response = await api.post(`/courses/enroll`, { course_id: courseId })
+    const response = await api.post(`/users/enroll`, { course_id: courseId }) // check this api at the backend
     return response.data
   } catch (error) {
     console.error("Enroll in course API error:", error)
@@ -50,9 +43,7 @@ export const enrollInCourse = async (courseId: string): Promise<{
   }
 }
 
-export const updateUserProfile = async (profileData: Partial<User>): Promise<{
-  profile: User
-}> => {
+export const updateUserProfile = async (profileData: any): Promise<any> => {
   try {
     const response = await api.put("/users/profile", profileData)
     return response.data
@@ -66,12 +57,12 @@ export const getAllUsers = async ({
   limit = 100,
   skip = 0,
 }: {
-  limit?: number,
-  skip?: number,
+  limit?: number
+  skip?: number
 }): Promise<{
-  users: User[];
-  count: number;
-  skip: number;
+  users: any[]
+  count: number
+  skip: number
   limit: number
 }> => {
   try {
@@ -85,14 +76,32 @@ export const getAllUsers = async ({
   }
 }
 
-export const getUserById = async (user_id: string): Promise<{
-  user: User
-}> => {
+export const getUserById = async (userId: string): Promise<any> => {
   try {
-    const response = await api.get(`/users/${user_id}`)
+    const response = await api.get(`/users/${userId}`)
     return response.data
   } catch (error) {
-    console.error(`Get user ${user_id} API error:`, error)
+    console.error(`Get user ${userId} API error:`, error)
+    throw error
+  }
+}
+
+export const updateUser = async (userId: string, userData: any): Promise<any> => {
+  try {
+    const response = await api.put(`/users/${userId}`, userData)
+    return response.data
+  } catch (error) {
+    console.error(`Update user ${userId} API error:`, error)
+    throw error
+  }
+}
+
+export const deleteUser = async (userId: string): Promise<any> => {
+  try {
+    const response = await api.delete(`/users/${userId}`)
+    return response.data
+  } catch (error) {
+    console.error(`Delete user ${userId} API error:`, error)
     throw error
   }
 }

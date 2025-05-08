@@ -1,28 +1,53 @@
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getAllUsers } from "../../services/userService";
-import { User } from "../../types";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
+import type React from "react"
+import { useState } from "react"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { getAllUsers, deleteUser } from "../../services/userService"
+import type { User } from "../../types"
+import LoadingSpinner from "../../components/common/LoadingSpinner"
+import { useNavigate } from "react-router-dom"
+import { toast } from "react-hot-toast"
 
 const UsersPage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>("")
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   // Fetch users using react-query
-  const {
-    data: usersData,
-    isLoading,
-    error,
-  } = useQuery(["adminUsers"], () => getAllUsers({ limit: 100 }));
+  const { data: usersData, isLoading, error } = useQuery(["adminUsers"], () => getAllUsers({ limit: 100 }))
 
-  const users: User[] = usersData?.users || [];
+  // Delete user mutation
+  const deleteUserMutation = useMutation((userId: string) => deleteUser(userId), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["adminUsers"])
+      toast.success("User deleted successfully")
+    },
+    onError: (error) => {
+      console.error("Delete user error:", error)
+      toast.error("Failed to delete user. Please try again.")
+    },
+  })
+
+  const users: User[] = usersData?.users || []
 
   // Filter users based on search term
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
+
+  const handleEdit = (userId: string) => {
+    navigate(`/admin/user/${userId}/edit`)
+  }
+
+  const handleDelete = (userId: string) => {
+    if (window.confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
+      deleteUserMutation.mutate(userId)
+    }
+  }
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner />
   }
 
   if (error) {
@@ -33,7 +58,7 @@ const UsersPage: React.FC = () => {
           Failed to load users. Please try again later.
         </p>
       </div>
-    );
+    )
   }
 
   return (
@@ -43,9 +68,7 @@ const UsersPage: React.FC = () => {
           <i className="fa-solid fa-users mr-2 text-primary-500"></i>
           Manage Users
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          View and manage all users in the system.
-        </p>
+        <p className="text-gray-600 dark:text-gray-400">View and manage all users in the system.</p>
       </div>
 
       <div className="mb-4">
@@ -78,13 +101,14 @@ const UsersPage: React.FC = () => {
                   <td className="px-4 py-2">
                     <button
                       className="text-sm text-primary-600 hover:text-primary-500 dark:text-primary-400"
-                      onClick={() => alert(`Editing user: ${user.name}`)}
+                      onClick={() => handleEdit(user._id)}
                     >
                       <i className="fa-solid fa-edit mr-1"></i>Edit
                     </button>
                     <button
                       className="text-sm text-red-600 hover:text-red-500 dark:text-red-400 ml-4"
-                      onClick={() => alert(`Deleting user: ${user.name}`)}
+                      onClick={() => handleDelete(user._id)}
+                      disabled={deleteUserMutation.isLoading}
                     >
                       <i className="fa-solid fa-trash mr-1"></i>Delete
                     </button>
@@ -100,7 +124,7 @@ const UsersPage: React.FC = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default UsersPage;
+export default UsersPage

@@ -16,6 +16,7 @@ const AdminLayout = () => {
   }, [location.pathname])
 
   const toggleSidebar = () => {
+    console.log(`Toggling sidebar... current value ${sidebarOpen}`)
     setSidebarOpen(!sidebarOpen)
   }
 

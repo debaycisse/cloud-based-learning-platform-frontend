@@ -23,7 +23,7 @@ const Navbar = ({ toggleSidebar, user, onLogout }: NavbarProps) => {
         <div className="flex items-center">
           <button
             onClick={toggleSidebar}
-            className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none"
+            className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none md:hidden"
             aria-label="Toggle sidebar"
           >
             <i className="fa-solid fa-bars h-6 w-6"></i>

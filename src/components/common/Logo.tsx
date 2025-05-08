@@ -10,7 +10,7 @@ const Logo = ({ className = "" }: LogoProps) => {
       <div className="h-8 w-8 text-primary-600 flex items-center justify-center">
         <i className="fa-solid fa-graduation-cap text-xl"></i>
       </div>
-      <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">LearnHub</span>
+      <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">CBLP</span>
     </Link>
   )
 }

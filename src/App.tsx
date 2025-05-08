@@ -33,6 +33,7 @@ import AdminCoursesPage from "./pages/admin/CoursesPage"
 import AdminCourseCreatePage from "./pages/admin/CourseCreatePage"
 import AdminCourseEditPage from "./pages/admin/CourseEditPage"
 import AdminUsersPage from "./pages/admin/UsersPage"
+import AdminUserEditPage from "./pages/admin/UserEditPage"
 import AdminAssessmentsPage from "./pages/admin/AssessmentsPage"
 import AdminAssessmentCreatePage from "./pages/admin/AssessmentCreatePage"
 import AdminAssessmentEditPage from "./pages/admin/AssessmentEditPage"
@@ -78,6 +79,7 @@ function App() {
                 <Route path="/admin/course/create" element={<AdminCourseCreatePage />} />
                 <Route path="/admin/course/:id/edit" element={<AdminCourseEditPage />} />
                 <Route path="/admin/users" element={<AdminUsersPage />} />
+                <Route path="/admin/user/:userId/edit" element={<AdminUserEditPage />} />
                 <Route path="/admin/assessments" element={<AdminAssessmentsPage />} />
                 <Route path="/admin/assessment/create" element={<AdminAssessmentCreatePage />} />
                 <Route path="/admin/assessment/:id/edit" element={<AdminAssessmentEditPage />} />

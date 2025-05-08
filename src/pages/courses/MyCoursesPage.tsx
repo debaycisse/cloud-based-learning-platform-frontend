@@ -1,0 +1,159 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import { getUserProgress } from "../../services/userService"
+import { getCourseById } from "../../services/courseService"
+import type { Course, UserProgress } from "../../types"
+import LoadingSpinner from "../../components/common/LoadingSpinner"
+import { Progress } from "../../components/ui/progress"
+
+const MyCoursesPage = () => {
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const [enrolledCourses, setEnrolledCourses] = useState<Array<Course & { progress: number }>>([])
+
+  useEffect(() => {
+    const fetchMyCourses = async () => {
+      try {
+        setLoading(true)
+        // Get user progress which includes enrolled courses
+        const { progress } = await getUserProgress()
+
+        // Combine in-progress and completed courses
+        const allEnrolledCourseIds = [...progress.in_progress_courses, ...progress.completed_courses]
+
+        // Fetch details for each enrolled course
+        const coursePromises = allEnrolledCourseIds.map(async (courseId) => {
+          try {
+            const { course } = await getCourseById(courseId)
+
+            // Calculate progress percentage
+            const isCompleted = progress.completed_courses.includes(courseId)
+            const progressPercentage = isCompleted ? 100 : calculateCourseProgress(course, progress)
+
+            return {
+              ...course,
+              progress: progressPercentage,
+            }
+          } catch (err) {
+            console.error(`Error fetching course ${courseId}:`, err)
+            return null
+          }
+        })
+
+        const coursesWithProgress = (await Promise.all(coursePromises)).filter(Boolean) as Array<
+          Course & { progress: number }
+        >
+        setEnrolledCourses(coursesWithProgress)
+      } catch (err) {
+        console.error("Error fetching enrolled courses:", err)
+        setError("Failed to load your courses. Please try again later.")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchMyCourses()
+  }, [])
+
+  // Helper function to calculate course progress
+  const calculateCourseProgress = (course: Course, userProgress: UserProgress): number => {
+    // This is a simplified calculation - you might want to implement a more detailed one
+    // based on completed sections/subsections if that data is available
+    return 30 // Default to 30% as a placeholder
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <LoadingSpinner />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="p-4">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <p>{error}</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="container mx-auto p-4 max-w-7xl">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">My Courses</h1>
+        <Link
+          to="/courses"
+          className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
+        >
+          Browse More Courses
+        </Link>
+      </div>
+
+      {enrolledCourses.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {enrolledCourses.map((course) => (
+            <div
+              key={course._id}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300"
+            >
+              <div className="relative pb-1/2">
+                <img
+                  src={`https://source.unsplash.com/random/800x600?${course.category}`}
+                  alt={course.title}
+                  className="h-48 w-full object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <div className="flex justify-between items-start mb-2">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{course.title}</h2>
+                  <span className="badge badge-primary">{course.difficulty}</span>
+                </div>
+
+                <div className="mt-4">
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Progress</span>
+                    <span>{course.progress}%</span>
+                  </div>
+                  <Progress value={course.progress} className="h-2" />
+                </div>
+
+                <div className="mt-4 flex justify-between items-center">
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                    {course.content.sections.length} sections
+                  </span>
+
+                  <Link
+                    to={`/course/${course._id}/learn`}
+                    className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm"
+                  >
+                    {course.progress === 100 ? "Review Course" : "Continue Learning"}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center">
+          <h3 className="text-xl font-medium mb-2">You haven't enrolled in any courses yet</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Explore our course catalog and start your learning journey today!
+          </p>
+          <Link
+            to="/courses"
+            className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors inline-block"
+          >
+            Browse Courses
+          </Link>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default MyCoursesPage

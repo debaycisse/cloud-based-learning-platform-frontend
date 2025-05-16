@@ -157,7 +157,7 @@ const { fields, append, remove } = useFieldArray({
               <textarea
                 id="question_text"
                 rows={3}
-                className={`mt-1 block w-full rounded-md border ${
+                className={`mt-1 block w-full rounded-md border dark:text-gray-700 ${
                   errors.question_text ? "border-red-500" : "border-gray-300"
                 } shadow-sm p-2 focus:border-primary-500 focus:ring-primary-500`}
                 placeholder="Enter your question here..."
@@ -175,7 +175,7 @@ const { fields, append, remove } = useFieldArray({
                   <div key={field.id} className="flex items-center">
                     <input
                       type="text"
-                      className={`flex-1 rounded-md border ${
+                      className={`flex-1 rounded-md border dark:text-gray-700 ${
                         errors.options?.[index] ? "border-red-500" : "border-gray-300"
                       } shadow-sm p-2 focus:border-primary-500 focus:ring-primary-500`}
                       placeholder={`Option ${index + 1}`}
@@ -214,7 +214,7 @@ const { fields, append, remove } = useFieldArray({
               <input
                 id="correct_answer"
                 type="text"
-                className={`mt-1 block w-full rounded-md border ${
+                className={`mt-1 block w-full rounded-md border dark:text-gray-700 ${
                   errors.correct_answer ? "border-red-500" : "border-gray-300"
                 } shadow-sm p-2 focus:border-primary-500 focus:ring-primary-500`}
                 placeholder="Enter the correct answer"
@@ -248,7 +248,7 @@ const { fields, append, remove } = useFieldArray({
                   type="text"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
-                  className="flex-1 rounded-l-md border border-gray-300 shadow-sm p-2 focus:border-primary-500 focus:ring-primary-500"
+                  className="flex-1 rounded-l-md border border-gray-300 shadow-sm p-2 focus:border-primary-500 focus:ring-primary-500 dark:text-gray-700"
                   placeholder="Add a tag"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {

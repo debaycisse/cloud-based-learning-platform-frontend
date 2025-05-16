@@ -35,7 +35,7 @@ export const updateUserPreferences = async (
 
 export const enrollInCourse = async (courseId: string): Promise<any> => {
   try {
-    const response = await api.post(`/users/enroll`, { course_id: courseId }) // check this api at the backend
+    const response = await api.post(`/courses/enroll`, { 'course_id': courseId }) // check this api at the backend
     return response.data
   } catch (error) {
     console.error("Enroll in course API error:", error)

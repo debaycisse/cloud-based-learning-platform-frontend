@@ -95,9 +95,9 @@ const QuestionsPage = () => {
       ) : questions.length > 0 ? (
         <>
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+            <table className="min-w-full bg-gray-50 border border-gray-200 rounded-lg shadow">
               <thead>
-                <tr className="bg-gray-100">
+                <tr className="bg-gray-100 dark:bg-gray-700">
                   <th className="py-2 px-4 border-b text-left">Question</th>
                   <th className="py-2 px-4 border-b text-left">Tags</th>
                   <th className="py-2 px-4 border-b text-center">Options</th>
@@ -106,7 +106,7 @@ const QuestionsPage = () => {
               </thead>
               <tbody>
                 {questions.map((question) => (
-                  <tr key={question._id} className="hover:bg-gray-50">
+                  <tr key={question._id} className="hover:bg-gray-50 dark:bg-gray-800">
                     <td className="py-2 px-4 border-b">{truncateText(question.question_text)}</td>
                     <td className="py-2 px-4 border-b">
                       <div className="flex flex-wrap gap-1">

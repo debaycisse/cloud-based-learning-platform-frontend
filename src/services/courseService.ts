@@ -92,6 +92,17 @@ export const deleteCourse = async (id: string): Promise<{ message: string }> => 
   }
 }
 
+export const completeCourse = async (id: any): Promise<{ message: string}> => {
+
+  try {
+    const response = await api.post(`/courses/complete`, {'course_id': id})
+    return response.data
+  } catch (error) {
+    console.error('Course could not be completed')
+    throw error
+  }
+}
+
 export default {
   getAllCourses,
   getCourseById,

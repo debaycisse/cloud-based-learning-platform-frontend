@@ -70,6 +70,7 @@ export interface User {
     title: string
     time_limit: number
     course_id: string
+    questions: string[]
     created_at: string
     updated_at: string
   }

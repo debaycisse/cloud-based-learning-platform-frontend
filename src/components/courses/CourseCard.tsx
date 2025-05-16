@@ -5,12 +5,23 @@ interface CourseCardProps {
   course: Course
 }
 
+
 const CourseCard = ({ course }: CourseCardProps) => {
+  const img = course.category === 'Programming'? 'https://i.ibb.co/hnZ9kf7/programming.webp' :
+    course.category === 'Data Science'? 'https://i.ibb.co/PZm982nX/data-science.webp' :
+    course.category === 'Web Development'? 'https://i.ibb.co/8nVQrXVc/web-dev.webp' :
+    course.category === 'Mobile Development'? 'https://i.ibb.co/W4dwScpv/mobile-dev.webp' :
+    course.category === 'DevOps'? 'https://i.ibb.co/6R6MsRvZ/devops.webp':
+    course.category === 'Cloud Computing'? 'https://i.ibb.co/WNP55yFF/cloud-computing.webp' :
+    course.category === 'Cybersecurity'? 'https://i.ibb.co/cq9xKY0/cybersecurity.webp':
+    course.category === 'Artificial Intelligence'? 'https://i.ibb.co/KpQhxcMf/artificial-intelligence.webp':
+    'https://i.ibb.co/63Dv0cm/tech-tools.webp'
+
   return (
     <div className="card hover:shadow-lg transition-shadow duration-300">
       <div className="relative pb-1/2">
         <img
-          src={`https://source.unsplash.com/random/800x600?${course.category}`}
+          src={`${img}`}
           alt={course.title}
           className="absolute h-full w-full object-cover"
         />

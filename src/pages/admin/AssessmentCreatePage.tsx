@@ -9,7 +9,7 @@ import { createQuestions } from "../../services/questionService";
 // Define schema for assessment creation
 const assessmentSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
-  time_limit: z.number().min(1, "Time limit must be at least 1 minute"),
+  time_limit: z.coerce.number().min(1, "Time limit must be at least 1 minute"),
   course_id: z.string().min(1, "Course ID is required"),
 });
 
@@ -69,7 +69,7 @@ const AssessmentCreatePage = () => {
       // Create the questions separately
       await createQuestions(
         assessment._id,
-        data.questions.map((q) => ({
+        questions.map((q) => ({
           question_text: q.question_text,
           options: q.options,
           correct_answer: q.correct_answer,
@@ -227,16 +227,16 @@ const AssessmentCreatePage = () => {
             {questions.map((question, questionIndex) => (
               <div
                 key={questionIndex}
-                className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
+                className="border border-gray-200 rounded-lg p-4 relative"
               >
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-md font-medium text-gray-900 dark:text-white">
+                  <h3 className="text-md font-medium">
                     Question {questionIndex + 1}
                   </h3>
                   <button
                     type="button"
                     onClick={() => removeQuestion(questionIndex)}
-                    className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                    className="text-red-500 hover:text-red-700"
                   >
                     <i className="fa-solid fa-trash"></i>
                     <span className="sr-only">Remove Question</span>
@@ -252,6 +252,7 @@ const AssessmentCreatePage = () => {
                         ? "border-red-500"
                         : ""
                     }`}
+                    {...register(`questions.${questionIndex}.question_text`)}
                     value={question.question_text}
                     onChange={(e) =>
                       updateQuestion(
@@ -263,24 +264,22 @@ const AssessmentCreatePage = () => {
                   />
                   {errors.questions?.[questionIndex]?.question_text && (
                     <p className="form-error">
-                      {
-                        errors.questions?.[questionIndex]?.question_text
-                          ?.message
-                      }
+                      {errors.questions[questionIndex].question_text?.message}
                     </p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Options
-                  </h4>
+                  <h4 className="text-sm font-medium">Options</h4>
                   {question.options.map((option, optionIndex) => (
                     <div key={optionIndex} className="flex items-center mb-2">
                       <input
                         type="text"
                         className="input flex-1"
                         placeholder={`Option ${optionIndex + 1}`}
+                        {...register(
+                          `questions.${questionIndex}.options.${optionIndex}`
+                        )}
                         value={option}
                         onChange={(e) =>
                           updateOption(
@@ -293,17 +292,16 @@ const AssessmentCreatePage = () => {
                       <button
                         type="button"
                         onClick={() => removeOption(questionIndex, optionIndex)}
-                        className="ml-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                        className="ml-2 text-red-500"
                       >
                         <i className="fa-solid fa-times"></i>
-                        <span className="sr-only">Remove Option</span>
                       </button>
                     </div>
                   ))}
                   <button
                     type="button"
                     onClick={() => addOption(questionIndex)}
-                    className="text-sm text-primary-600 hover:text-primary-500 dark:text-primary-400"
+                    className="text-sm text-primary-600"
                   >
                     <i className="fa-solid fa-plus mr-1"></i>
                     Add Option
@@ -319,6 +317,7 @@ const AssessmentCreatePage = () => {
                         ? "border-red-500"
                         : ""
                     }`}
+                    {...register(`questions.${questionIndex}.correct_answer`)}
                     value={question.correct_answer}
                     onChange={(e) =>
                       updateQuestion(
@@ -330,10 +329,7 @@ const AssessmentCreatePage = () => {
                   />
                   {errors.questions?.[questionIndex]?.correct_answer && (
                     <p className="form-error">
-                      {
-                        errors.questions?.[questionIndex]?.correct_answer
-                          ?.message
-                      }
+                      {errors.questions[questionIndex].correct_answer?.message}
                     </p>
                   )}
                 </div>

@@ -62,8 +62,14 @@ function App() {
                 <Route path="/courses" element={<CoursesPage />} />
                 <Route path="/course/:id" element={<CourseDetailPage />} />
                 <Route path="/course/:id/learn" element={<CoursePlayerPage />} />
+
+                <Route path="/course/:id/course/:id/learn" element={<CoursePlayerPage />} />
+
                 <Route path="/my-courses" element={<MyCoursesPage />} />
                 <Route path="/assessment/:id" element={<AssessmentPage />} />
+
+                <Route path="/course/:id/assessment/:id" element={<AssessmentPage />} />
+
                 <Route path="/assessment/:id/result" element={<AssessmentResultPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/progress" element={<ProgressPage />} />

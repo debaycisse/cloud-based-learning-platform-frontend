@@ -35,11 +35,25 @@ const CourseDetailPage = () => {
       },
     },
   )
-
+  console.log(`${JSON.stringify(assessmentData)}`)
   // Enroll mutation
   const enrollMutation = useMutation((courseId: string) => enrollInCourse(courseId), {
     onSuccess: () => {
-      navigate(`/course/${id}/learn`)
+      // Present user with assessment based on the course and if their scores are 50 or above navigate to the /course/${id}/learn
+      try {
+        const assessment = Array.isArray(assessmentData)? assessmentData[0] :
+          assessmentData
+        if (assessment) {
+          // Navigate to the assessment page
+          navigate(`/assessment/${assessment._id}`);
+        } else {
+          // If not assessment, navigate straight to the learning page
+          navigate(`/course/${id}/learn`);
+        }
+      } catch (error) {
+        console.error(`Error occured during post-enrollment navigation:`, error);
+        setError(`An error occured after enrollment. Please try again`)
+      }
     },
     onError: (err) => {
       console.error("Failed to enroll in course:", err)
@@ -92,6 +106,16 @@ const CourseDetailPage = () => {
     )
   }
 
+  const img = course.category === 'Programming'? 'https://i.ibb.co/HMx40dF/programming.webp' :
+    course.category === 'Data Science'? 'https://i.ibb.co/PZm982nX/data-science.webp" ' :
+    course.category === 'Web Development'? 'https://i.ibb.co/8nVQrXVc/web-dev.webp' :
+    course.category === 'Mobile Development'? 'https://i.ibb.co/W4dwScpv/mobile-dev.webp' :
+    course.category === 'DevOps'? 'https://i.ibb.co/6R6MsRvZ/devops.webp':
+    course.category === 'Cloud Computing'? 'https://i.ibb.co/WNP55yFF/cloud-computing.webp' :
+    course.category === 'Cybersecurity'? 'https://i.ibb.co/cq9xKY0/cybersecurity.webp':
+    course.category === 'Artificial Intelligence'? 'https://i.ibb.co/KpQhxcMf/artificial-intelligence.webp':
+    'https://i.ibb.co/63Dv0cm/tech-tools.webp'
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
@@ -104,7 +128,7 @@ const CourseDetailPage = () => {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
         <div className="relative pb-1/3">
           <img
-            src={`https://source.unsplash.com/random/1200x400?${course.category}`}
+            src={img}
             alt={course.title}
             className="absolute h-full w-full object-cover"
           />

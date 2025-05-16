@@ -90,9 +90,9 @@ const AssessmentsPage: React.FC = () => {
           <p className="text-gray-600 mt-2">Loading assessments...</p>
         </div>
       ) : assessments.length > 0 ? (
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
-          <thead>
-            <tr className="bg-gray-100">
+        <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-200 rounded-lg shadow">
+          <thead className="dark:bg-gray-700">
+            <tr className="bg-gray-100 text-gray-500">
               <th className="py-2 px-4 border-b">Title</th>
               <th className="py-2 px-4 border-b">Questions</th>
               <th className="py-2 px-4 border-b">Actions</th>

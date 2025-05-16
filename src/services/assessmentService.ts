@@ -16,15 +16,15 @@ export const getAssessmentForCourse = async (
 };
 
 export const getAssessmentById = async (
-  assessmentId: string
+  assessment_id: string
 ): Promise<{
   assessment: Assessment
 }> => {
   try {
-    const response = await api.get(`/assessments/${assessmentId}`);
+    const response = await api.get(`/assessments/${assessment_id}`);
     return response.data.assessment;
   } catch (error) {
-    console.error(`Get assessment ${assessmentId} API error:`, error);
+    console.error(`Get assessment ${assessment_id} API error:`, error);
     throw error;
   }
 };
@@ -52,7 +52,7 @@ export const getAssessments = async (
 export const submitAssessment = async (
   assessmentId: string,
   answers: string[],
-  time_started: string,
+  started_at: string,
   questions_id: string[]
 ): Promise<{
   message: string;
@@ -64,7 +64,7 @@ export const submitAssessment = async (
 }> => {
   try {
     const response = await api.post(`/assessments/${assessmentId}/submit`, {
-      answers, time_started, questions_id
+      answers,  started_at, questions_id
     });
     return response.data;
   } catch (error) {
@@ -116,6 +116,7 @@ export const createAssessment = async (
   assessment: Assessment
 }> => {
   try {
+    console.log(`Assessment data ::  ${JSON.stringify(assessmentData)}`)
     const response = await api.post("/assessments", assessmentData);
     return response.data;
   } catch (error) {

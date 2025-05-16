@@ -35,6 +35,23 @@ export const getQuestionById = async (
   }
 };
 
+export const getQuestionsByIds = async (
+  question_ids: string[]
+): Promise<{
+  question: Question[];
+}> => {
+  try {
+    const response = await api.post(`/questions/bulk`, { question_ids });
+    console.log(`/questions/bulk response ${response.data}`)
+    return response.data;
+  } catch (error) {
+    console.error(`Get question ${question_ids} API error:`, error);
+    throw error;
+  }
+};
+
+
+
 // Add the getQuestion function that returns a single question
 export const getQuestion = async (questionId: string): Promise<Question> => {
   try {
@@ -78,6 +95,7 @@ export const createQuestions = async (
     message: string;
     questions: Question[];
   }> => {
+    console.log(`questions object to the backend ::: ${JSON.stringify(questions)}`)
     try {
       const response = await api.post(`/questions/bulk/${assessmentId}`, { questions });
       return response.data;

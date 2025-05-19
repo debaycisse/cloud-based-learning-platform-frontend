@@ -60,7 +60,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { access_token, user } = await loginUser(email, password)
       localStorage.setItem("token", access_token)
       setUser(user)
-      navigate("/dashboard")
+      
+      const prefCategoriesLength = user.preferences?.categories?.length ?? 0
+
+      if (prefCategoriesLength < 1) {
+        navigate('/preferences');
+        return;
+      }
+      
+      navigate("/dashboard");
+
     } catch (error) {
       console.error("Login failed:", error)
       throw error

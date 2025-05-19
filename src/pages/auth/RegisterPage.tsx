@@ -53,7 +53,11 @@ const RegisterPage = () => {
     try {
       const { userId } = await registerUser(data.email, data.name, data.username, data.password)
       // After successful registration, redirect to preferences page
-      navigate("/preferences", { state: { userId } })
+      if (userId) {
+        navigate("/registration-info")
+        // 
+        // navigate("/preferences", { state: { userId } })
+      }
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to register. Please try again.")
       setIsLoading(false)

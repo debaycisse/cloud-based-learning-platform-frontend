@@ -284,13 +284,14 @@ const ProfilePage: React.FC = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="difficulty">Preferred Difficulty</Label>
+                    <Label htmlFor="difficulty" className="pr-2">Preferred Difficulty</Label>
                     <select
                       id="difficulty"
                       value={preferences?.difficulty || "beginner"}
                       onChange={(e) =>
                         handlePreferenceChange("difficulty", e.target.value)
                       }
+                      className="dark:bg-gray-950 px-2 py-1"
                     >
                       <option value="beginner">Beginner</option>
                       <option value="intermediate">Intermediate</option>
@@ -298,7 +299,7 @@ const ProfilePage: React.FC = () => {
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="learning_style">Learning Style</Label>
+                    <Label htmlFor="learning_style" className="pr-2">Learning Style</Label>
                     <select
                       id="learning_style"
                       value={preferences?.learning_style || "visual"}
@@ -308,6 +309,7 @@ const ProfilePage: React.FC = () => {
                           e.target.value
                         )
                       }
+                      className="dark:bg-gray-950 px-2 py-1"
                     >
                       <option value="visual">Visual</option>
                       <option value="auditory">Auditory</option>

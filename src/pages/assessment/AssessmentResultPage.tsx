@@ -75,7 +75,7 @@ const AssessmentResultPage: React.FC = () => {
 
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
+    const remainingSeconds = Math.ceil(seconds % 60);
     return `${minutes}m ${remainingSeconds}s`;
   };
 
@@ -162,7 +162,7 @@ const AssessmentResultPage: React.FC = () => {
               )}
             </div>
             <p className="text-sm mt-2">
-              Passing score: {process.env.PASSING_SCORE}%
+              Passing score: {import.meta.env.VITE_PASSING_SCORE}%
             </p>
           </CardContent>
         </Card>

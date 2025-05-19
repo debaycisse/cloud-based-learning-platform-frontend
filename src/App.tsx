@@ -14,6 +14,7 @@ import RegisterPage from "./pages/auth/RegisterPage"
 import PreferencesPage from "./pages/auth/PreferencesPage"
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage"
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
+import RegisterationInfoPage from "./pages/auth/RegisterationInfoPage"
 
 // Learner pages
 import DashboardPage from "./pages/dashboard/DashboardPage"
@@ -54,6 +55,7 @@ function App() {
             <Route path="/preferences" element={<PreferencesPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+            <Route path="/registration-info" element={<RegisterationInfoPage />} />
 
             {/* Protected learner routes */}
             <Route element={<ProtectedRoute />}>

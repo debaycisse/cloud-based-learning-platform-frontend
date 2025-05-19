@@ -86,7 +86,7 @@ export const updateUserPreferences = async (preferences: Partial<UserPreferences
 
 export const resetPassword = async (email: string): Promise<{
   message: string;
-  reset_token: string
+  // reset_token: string
 }> => {
   try {
     const response = await api.post("/auth/reset_password", { email })

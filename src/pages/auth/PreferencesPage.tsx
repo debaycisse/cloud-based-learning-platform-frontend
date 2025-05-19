@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -79,7 +79,6 @@ const goalOptions = [
 
 const PreferencesPage = () => {
   const navigate = useNavigate()
-  // const location = useLocation()
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [step, setStep] = useState(1)
@@ -111,6 +110,7 @@ const PreferencesPage = () => {
   // Toggle selection for multi-select fields
   const toggleSelection = (field: "categories" | "skills" | "goals", value: string) => {
     const currentValues = watch(field) || []
+
     if (currentValues.includes(value)) {
       setValue(
         field,

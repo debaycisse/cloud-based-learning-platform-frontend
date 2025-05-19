@@ -10,6 +10,7 @@ const ResetPasswordPage = () => {
     const [newPassword, setNewPassword] = React.useState<string>("");
     const [confirmPassword, setConfirmPassword] = React.useState<string>("");
     const [resetToken, setResetToken] = React.useState<string>("");
+    const [resetingPassword, setResetingPassword] = React.useState<boolean>(false);
 
     useEffect(() => {
         if (token) {
@@ -71,12 +72,14 @@ const ResetPasswordPage = () => {
 
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setResetingPassword(true);
         await handleSubmit(newPassword, confirmPassword);
+        setResetingPassword(false);
     };
 
     
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Reset Password</h1>
       <p className="mb-4">Please enter your new password.</p>
       {/* Add form for resetting password here */}
@@ -97,7 +100,7 @@ const ResetPasswordPage = () => {
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
         >
-          Reset Password
+          {resetingPassword ? 'Reseting Password...' : 'Reset Password'}
         </button>
       </form>
     </div>

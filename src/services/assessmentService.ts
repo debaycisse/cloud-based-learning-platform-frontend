@@ -22,7 +22,7 @@ export const getAssessmentById = async (
 }> => {
   try {
     const response = await api.get(`/assessments/${assessment_id}`);
-    return response.data.assessment;
+    return response.data;
   } catch (error) {
     console.error(`Get assessment ${assessment_id} API error:`, error);
     throw error;

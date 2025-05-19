@@ -277,11 +277,11 @@ const SupportPage = () => {
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900 dark:text-white">Email Support</h4>
-                    <p className="text-gray-600 dark:text-gray-400 mt-1">support@learnhub.com</p>
+                    <p className="text-gray-600 dark:text-gray-400 mt-1">support@cblp.com</p>
                     <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">Response time: 24-48 hours</p>
                   </div>
                 </div>
-                <div className="flex items-start">
+                {/* <div className="flex items-start">
                   <div className="mr-4 bg-primary-100 dark:bg-primary-900/30 p-3 rounded-full">
                     <i className="fa-solid fa-comments text-primary-600 dark:text-primary-400"></i>
                   </div>
@@ -290,7 +290,7 @@ const SupportPage = () => {
                     <p className="text-gray-600 dark:text-gray-400 mt-1">Available Monday-Friday</p>
                     <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">9:00 AM - 5:00 PM EST</p>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

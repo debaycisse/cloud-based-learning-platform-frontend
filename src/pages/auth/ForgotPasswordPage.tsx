@@ -1,27 +1,25 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { resetPassword } from "../../services/authService";
 
 const ForgotPasswordPage = () => {
-  const navigate = useNavigate();
-
   const [email, setEmail] = useState<string>("");
+  const [reseting, setReseting] = useState<boolean>(false);
 
   const handlePasswordReset = async () => {
     if (!email || !email.includes("@")) {
       alert("Please enter a valid email address.");
       return;
     }
-
+    setReseting(true);
     const res = await resetPassword(email);
-    if (res.reset_token) {
-    setEmail("");
-    alert("Password reset link has been sent to your email address.");
-
-    // navigate to reset password success page
-    navigate(`/reset-password/${res.reset_token}`);
+    if (res.message) {
+      setReseting(false);
+      setEmail("");
+      alert(
+        "Password reset link has been sent to your registered email address."
+      );
     }
-  }
+  };
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
@@ -29,9 +27,13 @@ const ForgotPasswordPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-2xl font-bold mb-4">Forgot Password</h1>
-      <p className="mb-4">Enter your email address to reset your password.</p>
-      <form className="w-full max-w-sm">
+      <h1 className="text-2xl font-bold mb-4 text-primary-900">
+        Forgot Password
+      </h1>
+      <p className="mb-4 text-primary-900">
+        Enter your email address to reset your password.
+      </p>
+      <form className="w-full max-w-sm text-primary-900">
         <input
           type="email"
           placeholder="Email"
@@ -39,6 +41,7 @@ const ForgotPasswordPage = () => {
           onChange={(e) => {
             handleEmailChange(e.target.value);
           }}
+          value={email}
         />
         <button
           type="submit"
@@ -48,7 +51,7 @@ const ForgotPasswordPage = () => {
             handlePasswordReset();
           }}
         >
-          Send Reset Link
+          {reseting ? "Sending Reset Link..." : "Send Reset Link"}
         </button>
       </form>
     </div>

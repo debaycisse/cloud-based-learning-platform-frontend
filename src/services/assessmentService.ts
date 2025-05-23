@@ -116,7 +116,6 @@ export const createAssessment = async (
   assessment: Assessment
 }> => {
   try {
-    console.log(`Assessment data ::  ${JSON.stringify(assessmentData)}`)
     const response = await api.post("/assessments", assessmentData);
     return response.data;
   } catch (error) {

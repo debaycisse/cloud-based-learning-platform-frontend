@@ -107,13 +107,13 @@ export const createQuestions = async (
 
 export const updateQuestion = async (
   questionId: string,
-  questionData: Partial<Question>
+  question: Partial<Question>
 ): Promise<{
     message: string;
     question: Question;
 }> => {
   try {
-    const response = await api.put(`/questions/${questionId}`, questionData);
+    const response = await api.put(`/questions/${questionId}`, question);
     return response.data;
   } catch (error) {
     console.error(`Update question ${questionId} API error:`, error);

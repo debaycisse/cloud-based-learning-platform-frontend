@@ -42,7 +42,6 @@ export const getQuestionsByIds = async (
 }> => {
   try {
     const response = await api.post(`/questions/bulk`, { question_ids });
-    console.log(`/questions/bulk response ${response.data}`)
     return response.data;
   } catch (error) {
     console.error(`Get question ${question_ids} API error:`, error);
@@ -95,7 +94,6 @@ export const createQuestions = async (
     message: string;
     questions: Question[];
   }> => {
-    console.log(`questions object to the backend ::: ${JSON.stringify(questions)}`)
     try {
       const response = await api.post(`/questions/bulk/${assessmentId}`, { questions });
       return response.data;
@@ -113,7 +111,7 @@ export const updateQuestion = async (
     question: Question;
 }> => {
   try {
-    const response = await api.put(`/questions/${questionId}`, question);
+    const response = await api.put(`/questions/${questionId}`, { question });
     return response.data;
   } catch (error) {
     console.error(`Update question ${questionId} API error:`, error);

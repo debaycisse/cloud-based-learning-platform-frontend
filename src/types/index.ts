@@ -134,4 +134,12 @@ export interface User {
     skip: number
     limit: number
   }
+
+  export interface ContactSupport {
+    // fullName, emailAddress, subject, messageContent, 
+    name: string
+    email: string
+    subject: string
+    message: string
+  }
   

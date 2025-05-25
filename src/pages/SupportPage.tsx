@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { contactSupport } from "../services/contactSupport"
 
 const contactFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -24,7 +25,7 @@ const SupportPage = () => {
     reset,
     formState: { errors },
   } = useForm<ContactFormData>({
-    resolver: zodResolver(contactFormSchema),
+    resolver: zodResolver(contactFormSchema)
   })
 
   const onSubmit = async (data: ContactFormData) => {
@@ -32,11 +33,7 @@ const SupportPage = () => {
     setSubmitError(null)
 
     try {
-      // In a real app, you would send this data to your backend
-      console.log("Contact form data:", data)
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await contactSupport(data)
 
       setSubmitSuccess(true)
       reset()

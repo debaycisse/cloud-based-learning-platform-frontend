@@ -35,7 +35,6 @@ const CourseDetailPage = () => {
       },
     },
   )
-  console.log(`${JSON.stringify(assessmentData)}`)
   // Enroll mutation
   const enrollMutation = useMutation((courseId: string) => enrollInCourse(courseId), {
     onSuccess: () => {

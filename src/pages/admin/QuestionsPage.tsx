@@ -139,7 +139,7 @@ const QuestionsPage = () => {
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="px-3 py-1 rounded-md mr-2 bg-gray-200 disabled:opacity-50"
+                  className="px-3 py-1 rounded-md mr-2 bg-gray-200 text-primary-600 disabled:opacity-50"
                 >
                   Previous
                 </button>
@@ -148,7 +148,7 @@ const QuestionsPage = () => {
                     key={page}
                     onClick={() => handlePageChange(page)}
                     className={`px-3 py-1 rounded-md mx-1 ${
-                      currentPage === page ? "bg-primary-600 text-white" : "bg-gray-200"
+                      currentPage === page ? "bg-primary-600 text-white" : "bg-gray-200 text-primary-600"
                     }`}
                   >
                     {page}
@@ -157,7 +157,7 @@ const QuestionsPage = () => {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1 rounded-md ml-2 bg-gray-200 disabled:opacity-50"
+                  className="px-3 py-1 rounded-md ml-2 bg-gray-200 text-primary-600 disabled:opacity-50"
                 >
                   Next
                 </button>

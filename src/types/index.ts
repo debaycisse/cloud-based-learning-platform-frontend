@@ -8,6 +8,7 @@ export interface User {
     updated_at?: string
     progress?: UserProgress
     preferences?: UserPreferences
+    course_progress?: CourseProgress
   }
   
   export interface LoginResponse {
@@ -117,6 +118,7 @@ export interface User {
     completed_courses: string[]
     in_progress_courses: string[]
     completed_assessments: string[]
+    course_progress?: CourseProgress
   }
   
   export interface UserPreferences {
@@ -136,10 +138,18 @@ export interface User {
   }
 
   export interface ContactSupport {
-    // fullName, emailAddress, subject, messageContent, 
     name: string
     email: string
     subject: string
     message: string
   }
   
+  export interface ProgressResponse {
+    message: string
+    progress: CourseProgress
+  }
+
+  export interface CourseProgress {
+    course_id: string
+    percentage: number
+  }

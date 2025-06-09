@@ -2,6 +2,7 @@ import React from "react";
 import { Progress } from "../ui/progress";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface LearningPathCardProps {
   path: {
@@ -14,6 +15,12 @@ interface LearningPathCardProps {
 }
 
 const LearningPathCard: React.FC<LearningPathCardProps> = ({ path }) => {
+  const navigate = useNavigate();
+
+  const handleViewDetails = () => {
+    navigate(`/learning-path/${path._id}`)
+  }
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -29,7 +36,7 @@ const LearningPathCard: React.FC<LearningPathCardProps> = ({ path }) => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button variant="outline" size="sm" onClick={() => alert(`View details for ${path.title}`)}>
+        <Button variant="outline" size="sm" onClick={handleViewDetails}>
           View Details
         </Button>
       </CardFooter>

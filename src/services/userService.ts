@@ -1,7 +1,10 @@
 import { api } from "./apiClient"
-import type { UserProgress, UserPreferences } from "../types"
+import type { UserProgress, UserPreferences, ProgressResponse } from "../types"
 
-export const getUserProgress = async (): Promise<{ progress: UserProgress; assessment_results: any[] }> => {
+export const getUserProgress = async (): Promise<{
+  progress: UserProgress;
+  assessment_results: any[]
+}> => {
   try {
     const response = await api.get("/users/progress")
     return response.data
@@ -29,6 +32,18 @@ export const updateUserPreferences = async (
     return response.data
   } catch (error) {
     console.error("Update user preferences API error:", error)
+    throw error
+  }
+}
+
+export const updateProgress = async (
+  courseId: string, percentage: number
+): Promise<ProgressResponse> => {
+  try {
+    const response = await api.put("/users/progress", { course_id: courseId, percentage: percentage })
+    return response.data
+  } catch (error) {
+    console.error("Update progress API error:", error)
     throw error
   }
 }

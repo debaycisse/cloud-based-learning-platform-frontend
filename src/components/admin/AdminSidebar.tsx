@@ -1,5 +1,3 @@
-"use client"
-
 import { Link, useLocation } from "react-router-dom"
 import Logo from "../common/Logo"
 
@@ -26,6 +24,11 @@ const AdminSidebar = ({ isOpen, toggleSidebar }: AdminSidebarProps) => {
       name: "Assessments",
       path: "/admin/assessments",
       icon: "fa-solid fa-clipboard-check",
+    },
+    {
+      name: "Learning Paths",
+      path: "/admin/learning-paths",
+      icon: "fa-solid fa-route",
     },
     {
       name: "Questions",

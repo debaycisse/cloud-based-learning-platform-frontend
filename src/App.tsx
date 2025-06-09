@@ -27,6 +27,7 @@ import AssessmentResultPage from "./pages/assessment/AssessmentResultPage"
 import ProfilePage from "./pages/dashboard/ProfilePage"
 import ProgressPage from "./pages/dashboard/ProgressPage"
 import SupportPage from "./pages/SupportPage"
+import LearningPathDetailPage from "./pages/learning-paths/LearningPathDetailPage"
 
 // Admin pages
 import AdminDashboardPage from "./pages/admin/DashboardPage"
@@ -38,6 +39,9 @@ import AdminUserEditPage from "./pages/admin/UserEditPage"
 import AdminAssessmentsPage from "./pages/admin/AssessmentsPage"
 import AdminAssessmentCreatePage from "./pages/admin/AssessmentCreatePage"
 import AdminAssessmentEditPage from "./pages/admin/AssessmentEditPage"
+import AdminLearningPathsPage from "./pages/admin/LearningPathsPage"
+import AdminLearningPathCreatePage from "./pages/admin/LearningPathCreatePage"
+import AdminLearningPathEditPage from "./pages/admin/LearningPathEditPage"
 import AdminQuestionsPage from "./pages/admin/QuestionsPage"
 import AdminQuestionCreatePage from "./pages/admin/QuestionCreatePage"
 import AdminQuestionEditPage from "./pages/admin/QuestionEditPage"
@@ -68,6 +72,7 @@ function App() {
                 <Route path="/course/:id/course/:id/learn" element={<CoursePlayerPage />} />
 
                 <Route path="/my-courses" element={<MyCoursesPage />} />
+                <Route path="/learning-path/:id" element={<LearningPathDetailPage />} />
                 <Route path="/assessment/:id" element={<AssessmentPage />} />
 
                 <Route path="/course/:id/assessment/:id" element={<AssessmentPage />} />
@@ -91,6 +96,9 @@ function App() {
                 <Route path="/admin/assessments" element={<AdminAssessmentsPage />} />
                 <Route path="/admin/assessment/create" element={<AdminAssessmentCreatePage />} />
                 <Route path="/admin/assessment/:id/edit" element={<AdminAssessmentEditPage />} />
+                <Route path="/admin/learning-paths" element={<AdminLearningPathsPage />} />
+                <Route path="/admin/learning-path/create" element={<AdminLearningPathCreatePage />} />
+                <Route path="/admin/learning-path/:id/edit" element={<AdminLearningPathEditPage />} />
                 <Route path="/admin/questions" element={<AdminQuestionsPage />} />
                 <Route path="/admin/question/create" element={<AdminQuestionCreatePage />} />
                 <Route path="/admin/question/:id/edit" element={<AdminQuestionEditPage />} />

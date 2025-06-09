@@ -129,7 +129,8 @@ export default function CoursePlayerPage() {
 
     // If course is completed, navigate to completion page or course detail
     if (newProgress.completedItems === newProgress.totalItems) {
-      navigate(`/courses/${id}?completed=true`)
+      // navigate(`/courses/${id}?completed=true`)
+      navigate('/progress')
     }
   }
 

@@ -8,23 +8,18 @@ import { Badge } from "../../components/ui/badge"
 import { Separator } from "../../components/ui/seperator"
 import LoadingSpinner from "../../components/common/LoadingSpinner"
 import { ArrowLeft, BookOpen, CheckCircle, Clock, Play, Lock } from "lucide-react"
-import type { LearningPath, Course, UserProgress } from "../../types"
+import type { LearningPath, Course, UserProgress, CourseProgress } from "../../types"
 import { learningPathService } from "../../services/learningPathService"
 import { getCourseById } from "../../services/courseService"
 import { getUserProgress } from "../../services/userService"
+
 
 const LearningPathDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [learningPath, setLearningPath] = useState<LearningPath | null>(null)
   const [courses, setCourses] = useState<Course[]>([])
-  const [userProgress, setUserProgress] = useState<UserProgress>(
-    {
-        "completed_courses": [""],
-        "in_progress_courses": [""],
-        "completed_assessments": [""],
-    }
-  )
+  const [userProgress, setUserProgress] = useState<CourseProgress[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -47,7 +42,7 @@ const LearningPathDetailPage: React.FC = () => {
 
         // Fetch user progress for these courses
         const progressData = await getUserProgress()
-        setUserProgress(progressData.progress)
+        setUserProgress(progressData.progress.completed_courses)
       } catch (err) {
         setError("Failed to load learning path details")
         console.error("Error fetching learning path details:", err)
@@ -59,19 +54,13 @@ const LearningPathDetailPage: React.FC = () => {
     fetchLearningPathDetails()
   }, [id])
 
-//   const getCourseProgress = (courseId: string) => {
-//     const progress = userProgress.find((p) => p.course_id === courseId)
-//     return progress ? progress.progress_percentage : 0
-//   }
-
-  const getCourseProgressPercentage = (courseId: string) => {
-    const progress = userProgress.course_progress?.course_id === courseId ? 
-        userProgress.course_progress : null
+  const getCourseProgress = (courseId: string) => {
+    const progress = userProgress.find((p) => p.course_id === courseId)
     return progress ? progress.percentage : 0
   }
 
   const isCourseCompleted = (courseId: string) => {
-    return courseId in userProgress.completed_courses
+    return getCourseProgress(courseId) >= 100
   }
 
   const isCourseAccessible = (courseIndex: number) => {
@@ -93,7 +82,7 @@ const LearningPathDetailPage: React.FC = () => {
 
   const getOverallProgress = () => {
     if (courses.length === 0) return 0
-    const totalProgress = courses.reduce((sum, course) => sum + getCourseProgressPercentage(course._id), 0)
+    const totalProgress = courses.reduce((sum, course) => sum + getCourseProgress(course._id), 0)
     return Math.round(totalProgress / courses.length)
   }
 
@@ -192,7 +181,7 @@ const LearningPathDetailPage: React.FC = () => {
 
         <div className="space-y-4">
           {courses.map((course, index) => {
-            const progress = getCourseProgressPercentage(course._id)
+            const progress = getCourseProgress(course._id)
             const isCompleted = isCourseCompleted(course._id)
             const isAccessible = isCourseAccessible(index)
             const isInProgress = progress > 0 && progress < 100
@@ -231,7 +220,6 @@ const LearningPathDetailPage: React.FC = () => {
                             </div>
                             <div className="flex items-center gap-1">
                               <Clock className="w-4 h-4" />
-                              {/* <span>~{course.estimated_duration || "N/A"}</span> */}
                             </div>
                           </div>
 
@@ -288,36 +276,19 @@ export default LearningPathDetailPage
 
 
 
-
-
-
-
-
-
-
-// import type React from "react"
-// import { useState, useEffect } from "react"
-// import { useParams, useNavigate } from "react-router-dom"
-// import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card"
-// import { Button } from "../../components/ui/button"
-// import { Progress } from "../../components/ui/progress"
-// import { Badge } from "../../components/ui/badge"
-// import { Separator } from "../../components/ui/seperator"
-// import LoadingSpinner from "../../components/common/LoadingSpinner"
-// import { ArrowLeft, BookOpen, CheckCircle, Clock, Play, Lock } from "lucide-react"
-// import type { LearningPath, Course, UserProgress, CourseProgress } from "../../types"
-// import { learningPathService } from "../../services/learningPathService"
-// import { getCourseById } from "../../services/courseService"
-// import { getUserProgress } from "../../services/userService"
-
 // const LearningPathDetailPage: React.FC = () => {
 //   const { id } = useParams<{ id: string }>()
 //   const navigate = useNavigate()
 //   const [learningPath, setLearningPath] = useState<LearningPath | null>(null)
 //   const [courses, setCourses] = useState<Course[]>([])
-//   const [userProgress, setUserProgress] = useState<string[]>([])
-//   const [courseProgress, setCourseProgress] = useState<CourseProgress>({
-//     course_id: "",percentage: 0 })
+//   const [userProgress, setUserProgress] = useState<UserProgress>({
+//     "completed_courses": [{
+//         "course_id": "",
+//         "percentage": 0
+//     },],
+//     "in_progress_courses": [""],
+//     "completed_assessments": [""]
+//   })
 //   const [loading, setLoading] = useState(true)
 //   const [error, setError] = useState<string | null>(null)
 
@@ -335,13 +306,12 @@ export default LearningPathDetailPage
 //         // Fetch courses in the learning path
 //         const coursePromises = pathData.courses.map((courseId: string) => getCourseById(courseId))
 //         const coursesData = await Promise.all(coursePromises)
-//         const courses = coursesData.map((courseResponse) => courseResponse.course)
+//         const courses = coursesData.map((course) => course.course)
 //         setCourses(courses)
 
 //         // Fetch user progress for these courses
 //         const progressData = await getUserProgress()
-//         setUserProgress(progressData.progress.in_progress_courses)
-//         setCourseProgress(progressData.progress.course_progress || { course_id: "", percentage: 0 })
+//         setUserProgress(progressData.progress)
 //       } catch (err) {
 //         setError("Failed to load learning path details")
 //         console.error("Error fetching learning path details:", err)
@@ -353,13 +323,14 @@ export default LearningPathDetailPage
 //     fetchLearningPathDetails()
 //   }, [id])
 
-//   const getCourseProgress = (courseId: string) => {
-//     const progress = userProgress.find((course_id) => course_id === courseId)
-//     return progress ? progress.progress_percentage : 0
+//   const getCourseProgressPercentage = (courseId: string) => {
+//     const progress = userProgress.course_progress?.course_id === courseId ? 
+//         userProgress.course_progress : null
+//     return progress ? progress.percentage : 0
 //   }
 
 //   const isCourseCompleted = (courseId: string) => {
-//     return getCourseProgress(courseId) >= 100
+//     return courseId in userProgress.completed_courses
 //   }
 
 //   const isCourseAccessible = (courseIndex: number) => {
@@ -381,7 +352,7 @@ export default LearningPathDetailPage
 
 //   const getOverallProgress = () => {
 //     if (courses.length === 0) return 0
-//     const totalProgress = courses.reduce((sum, course) => sum + getCourseProgress(course._id), 0)
+//     const totalProgress = courses.reduce((sum, course) => sum + getCourseProgressPercentage(course._id), 0)
 //     return Math.round(totalProgress / courses.length)
 //   }
 
@@ -480,7 +451,7 @@ export default LearningPathDetailPage
 
 //         <div className="space-y-4">
 //           {courses.map((course, index) => {
-//             const progress = getCourseProgress(course._id)
+//             const progress = getCourseProgressPercentage(course._id)
 //             const isCompleted = isCourseCompleted(course._id)
 //             const isAccessible = isCourseAccessible(index)
 //             const isInProgress = progress > 0 && progress < 100
@@ -515,11 +486,11 @@ export default LearningPathDetailPage
 //                           <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
 //                             <div className="flex items-center gap-1">
 //                               <BookOpen className="w-4 h-4" />
-//                               <span>{course.sections?.length || 0} sections</span>
+//                               <span>{course.content.sections?.length || 0} sections</span>
 //                             </div>
 //                             <div className="flex items-center gap-1">
 //                               <Clock className="w-4 h-4" />
-//                               <span>~{course.estimated_duration || "N/A"}</span>
+//                               {/* <span>~{course.estimated_duration || "N/A"}</span> */}
 //                             </div>
 //                           </div>
 

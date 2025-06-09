@@ -115,10 +115,9 @@ export interface User {
   }
   
   export interface UserProgress {
-    completed_courses: string[]
+    completed_courses: CourseProgress[]
     in_progress_courses: string[]
     completed_assessments: string[]
-    course_progress?: CourseProgress
   }
   
   export interface UserPreferences {

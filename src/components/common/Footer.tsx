@@ -9,21 +9,21 @@ const Footer = () => {
           </div>
           <div className="flex space-x-4">
             <a
-              href="#"
+              href="/support"
               className="text-sm text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
             >
               <i className="fa-solid fa-shield-halved mr-1"></i>
               Privacy Policy
             </a>
             <a
-              href="#"
+              href="/support"
               className="text-sm text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
             >
               <i className="fa-solid fa-file-contract mr-1"></i>
               Terms of Service
             </a>
             <a
-              href="#"
+              href="/support"
               className="text-sm text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400"
             >
               <i className="fa-solid fa-envelope mr-1"></i>

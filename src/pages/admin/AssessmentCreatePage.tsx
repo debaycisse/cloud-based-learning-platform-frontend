@@ -141,6 +141,30 @@ const AssessmentCreatePage = () => {
     setValue("questions", updatedQuestions);
   };
 
+  const addTag = (questionIndex: number) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[questionIndex].tags.push("");
+    setValue("questions", updatedQuestions);
+  };
+
+  const updateTag = (
+    questionIndex: number,
+    tagIndex: number,
+    value: string
+  ) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[questionIndex].tags[tagIndex] = value;
+    setValue("questions", updatedQuestions);
+  };
+
+  const removeTag = (questionIndex: number, tagIndex: number) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[questionIndex].tags = updatedQuestions[
+      questionIndex
+    ].tags.filter((_, i) => i !== tagIndex);
+    setValue("questions", updatedQuestions);
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
@@ -333,6 +357,46 @@ const AssessmentCreatePage = () => {
                     </p>
                   )}
                 </div>
+
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium">Tags</h4>
+                  {question.tags.map((tag, tagIndex) => (
+                    <div key={tagIndex} className="flex items-center mb-2">
+                      <input
+                        type="text"
+                        className="input flex-1"
+                        placeholder={`Tag ${tagIndex + 1}`}
+                        {...register(
+                          `questions.${questionIndex}.tags.${tagIndex}`
+                        )}
+                        value={tag}
+                        onChange={(e) =>
+                          updateTag(
+                            questionIndex,
+                            tagIndex,
+                            e.target.value
+                          )
+                        }
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeTag(questionIndex, tagIndex)}
+                        className="ml-2 text-red-500"
+                      >
+                        <i className="fa-solid fa-times"></i>
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => addTag(questionIndex)}
+                    className="text-sm text-primary-600"
+                  >
+                    <i className="fa-solid fa-plus mr-1"></i>
+                    Add Tag
+                  </button>
+                </div>
+                
               </div>
             ))}
 

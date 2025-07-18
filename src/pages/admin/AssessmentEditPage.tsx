@@ -55,6 +55,7 @@ const AssessmentEditPage = () => {
           question_text: "",
           options: ["", ""],
           correct_answer: "",
+          tags: ["", ""],
         },
       ],
       createdAt: new Date(),
@@ -70,18 +71,20 @@ const AssessmentEditPage = () => {
       try {
         // Fetch assessment details
         const assessment = await getAssessmentById(id!);
+        // console.log(`Assessment fetched: ${JSON.stringify(assessment)}`);
 
         // Fetch questions associated with the assessment
         const { questions: fetchedQuestions } = await getQuestionByAssessmentId(
           id!
         );
+        // console.log(`Questions fetched: ${JSON.stringify(fetchedQuestions)}`);
 
         // Reset form with fetched data
         reset({
-          title: assessment.assessment.title,
-          courseId: assessment.assessment.course_id,
-          createdAt: new Date(assessment.assessment.created_at),
-          updatedAt: new Date(assessment.assessment.updated_at),
+          title: assessment.title,
+          courseId: assessment.course_id,
+          createdAt: new Date(assessment.created_at),
+          updatedAt: new Date(assessment.updated_at),
           questions: fetchedQuestions.map((q) => ({
             _id: q._id,
             question_text: q.question_text,
@@ -122,6 +125,7 @@ const AssessmentEditPage = () => {
             question_text: q.question_text,
             options: q.options,
             correct_answer: q.correct_answer,
+            tags: q.tags || [],
           }
           updateQuestionInBackend(q._id!, question)}
         )
@@ -185,6 +189,30 @@ const AssessmentEditPage = () => {
       questionIndex
     ].options.filter((_, i) => i !== optionIndex);
     setValue("questions", updatedQuestions);
+  };
+
+  const addTag = (questionIndex: number) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[questionIndex].tags?.push("");
+    setValue("questions", updatedQuestions);
+  };
+
+  const updateTag = (
+    questionIndex: number,
+    tagIndex: number,
+    value: string
+  ) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[questionIndex].tags[tagIndex] = value;
+    setValue("questions", updatedQuestions);
+  };
+
+  const removeTag = (questionIndex: number, tagIndex: number) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[questionIndex].tags = updatedQuestions[
+        questionIndex
+      ].tags.filter((_, i) => i !== tagIndex);
+      setValue("questions", updatedQuestions);
   };
 
   return (
@@ -351,6 +379,41 @@ const AssessmentEditPage = () => {
                     </p>
                   )}
                 </div>
+
+                <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mt-4">
+                  Tags
+                </h4>
+                {question.tags?.map((tag, tagIndex) => (
+                  <div key={tagIndex} className="flex items-center mb-2">
+                    <input
+                      type="text"
+                      className="input flex-1"
+                      placeholder={`Tag ${tagIndex + 1}`}
+                      value={tag}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        updateTag(questionIndex, tagIndex, e.target.value);
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeTag(questionIndex, tagIndex)}
+                      className="ml-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                    >
+                      <i className="fa-solid fa-times"></i>
+                      <span className="sr-only">Remove Tag</span>
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => addTag(questionIndex)}
+                  className="text-sm text-primary-600 hover:text-primary-500 dark:text-primary-400"
+                >
+                  <i className="fa-solid fa-plus mr-1"></i>
+                  Add Tag
+                </button>
+
               </div>
             ))}
 

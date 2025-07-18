@@ -41,6 +41,11 @@ const AdminSidebar = ({ isOpen, toggleSidebar }: AdminSidebarProps) => {
       icon: "fa-solid fa-users",
     },
     {
+      name: "Concepts",
+      path: "/admin/concepts",
+      icon: "fa-solid fa-lightbulb"
+    },
+    {
       name: "Back to Platform",
       path: "/dashboard",
       icon: "fa-solid fa-arrow-left",

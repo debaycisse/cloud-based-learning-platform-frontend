@@ -24,6 +24,7 @@ import CoursePlayerPage from "./pages/courses/CoursePlayerPage"
 import MyCoursesPage from "./pages/courses/MyCoursesPage"
 import AssessmentPage from "./pages/assessment/AssessmentPage"
 import AssessmentResultPage from "./pages/assessment/AssessmentResultPage"
+import AssessmentAdvicePage from "./pages/assessment/AssessmentAdvicePage"
 import ProfilePage from "./pages/dashboard/ProfilePage"
 import ProgressPage from "./pages/dashboard/ProgressPage"
 import SupportPage from "./pages/SupportPage"
@@ -45,6 +46,9 @@ import AdminLearningPathEditPage from "./pages/admin/LearningPathEditPage"
 import AdminQuestionsPage from "./pages/admin/QuestionsPage"
 import AdminQuestionCreatePage from "./pages/admin/QuestionCreatePage"
 import AdminQuestionEditPage from "./pages/admin/QuestionEditPage"
+import AdminConceptsPage from "./pages/admin/ConceptsPage"
+import AdminConceptCreatePage from "./pages/admin/ConceptCreatePage"
+import AdminConceptEditPage from "./pages/admin/ConceptEditPage"
 
 function App() {
   return (
@@ -68,16 +72,13 @@ function App() {
                 <Route path="/courses" element={<CoursesPage />} />
                 <Route path="/course/:id" element={<CourseDetailPage />} />
                 <Route path="/course/:id/learn" element={<CoursePlayerPage />} />
-
                 <Route path="/course/:id/course/:id/learn" element={<CoursePlayerPage />} />
-
                 <Route path="/my-courses" element={<MyCoursesPage />} />
                 <Route path="/learning-path/:id" element={<LearningPathDetailPage />} />
                 <Route path="/assessment/:id" element={<AssessmentPage />} />
-
                 <Route path="/course/:id/assessment/:id" element={<AssessmentPage />} />
-
                 <Route path="/assessment/:id/result" element={<AssessmentResultPage />} />
+                <Route path="/assessment/:courseId/advise" element={<AssessmentAdvicePage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/progress" element={<ProgressPage />} />
                 <Route path="/support" element={<SupportPage />} />
@@ -102,6 +103,9 @@ function App() {
                 <Route path="/admin/questions" element={<AdminQuestionsPage />} />
                 <Route path="/admin/question/create" element={<AdminQuestionCreatePage />} />
                 <Route path="/admin/question/:id/edit" element={<AdminQuestionEditPage />} />
+                <Route path="/admin/concepts" element={<AdminConceptsPage />} />
+                <Route path="/admin/concept/create" element={<AdminConceptCreatePage />} />
+                <Route path="/admin/concept/:id/edit" element={<AdminConceptEditPage />} />
               </Route>
             </Route>
           </Routes>

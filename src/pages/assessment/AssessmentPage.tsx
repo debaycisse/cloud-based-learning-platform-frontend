@@ -44,13 +44,13 @@ const AssessmentPage: React.FC = () => {
           return;
         }
         // Fetch assessment details
-        const assessmentData = (await getAssessmentById(id)).assessment
+        const assessmentData = await getAssessmentById(id)
         setAssessment(assessmentData);
         setTimeRemaining(assessmentData.time_limit * 60); // Convert minutes to seconds
 
         // Fetch questions for the assessment using question IDs
         const questionsData = await getQuestionsByIds(assessmentData.questions);
-        setQuestions(questionsData.questions);
+        setQuestions(questionsData.questions || []);
         setLoading(false);
       } catch (err) {
         setError("Failed to load assessment or questions");
@@ -135,9 +135,10 @@ const AssessmentPage: React.FC = () => {
       const questions_id = questions.map((question) => question._id);
 
       // Submit the assessment along with the user's answers and score
-      await submitAssessment(id!, answersValues, timeStarted, questions_id);
+      const {result} = await submitAssessment(id!, answersValues, timeStarted, questions_id);
 
-      // Navigate to the result page
+      if (result && result.score < 50) navigate(`/assessment/${result._id}/advise`)
+
       navigate(`/assessment/${assessment._id}/result`);
     } catch (err) {
       setError("Failed to submit assessment");

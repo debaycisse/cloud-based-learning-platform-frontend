@@ -22,8 +22,11 @@ const CoursesPage: React.FC = () => {
     'Programming',
     'Web Development',
     'Data Science',
+    'Mobile Development',
     'Machine Learning',
-    'Cloud Computing'
+    'Cloud Computing',
+    'Cybersecurity',
+    'Artificial Intelligence'
   ]
 
   if (isLoading) {

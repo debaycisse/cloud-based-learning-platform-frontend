@@ -24,11 +24,13 @@ const DashboardPage = () => {
     error: pathsError,
   } = useQuery(["recommendedPaths"], () => getLearningPathRecommendations())
 
+
   const {
     data: progressData,
     isLoading: isLoadingProgress,
     error: progressError,
   } = useQuery(["userProgress"], () => getUserProgress())
+
 
   const isLoading = isLoadingCourses || isLoadingPaths || isLoadingProgress
   const error = coursesError || pathsError || progressError
@@ -48,6 +50,7 @@ const DashboardPage = () => {
     )
   }
 
+
   const recommendedCourses = recommendedCoursesData?.recommended_courses || []
   const recommendedPaths = recommendedPathsData?.recommended_paths || []
   const progress = progressData?.progress || null
@@ -60,7 +63,7 @@ const DashboardPage = () => {
             <i className="fa-solid fa-hand-wave mr-2 text-primary-500"></i>
             Welcome back, {user?.username}!
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">Here's an overview of your learning journey.</p>
+          <p className="text-gray-600 dark:text-gray-400">Here is an overview of your learning journey.</p>
         </div>
         <div className="mt-4 md:mt-0">
           <Link to="/courses" className="btn btn-primary">

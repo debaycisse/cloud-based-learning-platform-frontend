@@ -1,5 +1,5 @@
 import { api } from "./apiClient"
-import type { UserProgress, UserPreferences, ProgressResponse } from "../types"
+import type { UserProgress, UserPreferences, ProgressResponse, Cooldown } from "../types"
 
 export const getUserProgress = async (): Promise<{
   progress: UserProgress;
@@ -14,13 +14,27 @@ export const getUserProgress = async (): Promise<{
   }
 }
 
-export const getUserPreferences = async (): Promise<{ preferences: UserPreferences }> => {
+export const getUserPreferences = async (
+): Promise<{ preferences: UserPreferences }> => {
   try {
     const response = await api.get("/users/preferences")
     return response.data
   } catch (error) {
     console.error("Get user preferences API error:", error)
     throw error
+  }
+}
+
+export const getUserCooldown = async (
+): Promise<Cooldown | {
+  'message': 'No cooldown data found for this user'
+}> => {
+  try {
+    const response = await api.get('/users/cooldown');
+    return response.data;
+  } catch (error) {
+    console.error("Get user's cooldown failed: ", error);
+    throw error;
   }
 }
 
@@ -40,7 +54,9 @@ export const updateProgress = async (
   courseId: string, percentage: number
 ): Promise<ProgressResponse> => {
   try {
-    const response = await api.put("/users/progress", { course_id: courseId, percentage: percentage })
+    const response = await api.put(
+      "/users/progress", { course_id: courseId, percentage: percentage }
+    )
     return response.data
   } catch (error) {
     console.error("Update progress API error:", error)
@@ -48,9 +64,11 @@ export const updateProgress = async (
   }
 }
 
-export const enrollInCourse = async (courseId: string): Promise<any> => {
+export const enrollInCourse = async (
+  courseId: string
+): Promise<any> => {
   try {
-    const response = await api.post(`/courses/enroll`, { 'course_id': courseId }) // check this api at the backend
+    const response = await api.post(`/courses/enroll`, { 'course_id': courseId })
     return response.data
   } catch (error) {
     console.error("Enroll in course API error:", error)

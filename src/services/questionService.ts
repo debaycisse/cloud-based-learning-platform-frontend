@@ -38,7 +38,7 @@ export const getQuestionById = async (
 export const getQuestionsByIds = async (
   question_ids: string[]
 ): Promise<{
-  question: Question[];
+  questions: Question[];
 }> => {
   try {
     const response = await api.post(`/questions/bulk`, { question_ids });

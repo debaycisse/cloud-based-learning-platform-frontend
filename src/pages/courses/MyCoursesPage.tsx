@@ -4,9 +4,9 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { getUserProgress } from "../../services/userService"
 import { getCourseById } from "../../services/courseService"
-import type { Course, UserProgress } from "../../types"
+import type { Course, CourseProgress } from "../../types"
 import LoadingSpinner from "../../components/common/LoadingSpinner"
-import { Progress } from "../../components/ui/progress"
+// import { Progress } from "../../components/ui/progress"
 
 const MyCoursesPage = () => {
   const [loading, setLoading] = useState<boolean>(true)
@@ -21,7 +21,14 @@ const MyCoursesPage = () => {
         const { progress } = await getUserProgress()
 
         // Combine in-progress and completed courses
-        const allEnrolledCourseIds = [...progress.in_progress_courses, ...progress.completed_courses]
+        const combinedIds = [progress.in_progress_courses, ...progress.completed_courses]
+        const allEnrolledCourseIds: string[] = []
+
+        combinedIds.forEach((courseId) => {
+          if (typeof courseId === 'string') {
+            allEnrolledCourseIds.push(courseId)
+          }
+        })
 
         // Fetch details for each enrolled course
         const coursePromises = allEnrolledCourseIds.map(async (courseId) => {
@@ -29,8 +36,11 @@ const MyCoursesPage = () => {
             const { course } = await getCourseById(courseId)
 
             // Calculate progress percentage
-            const isCompleted = progress.completed_courses.includes(courseId)
-            const progressPercentage = isCompleted ? 100 : calculateCourseProgress(course, progress)
+            const theCourseProgress = progress.completed_courses.
+              find((courseProgress) => courseProgress.course_id === courseId)
+
+            const isCompleted = theCourseProgress && theCourseProgress.percentage === 100
+            const progressPercentage = isCompleted ? 100 : calculateCourseProgress(theCourseProgress)
 
             return {
               ...course,
@@ -58,11 +68,11 @@ const MyCoursesPage = () => {
   }, [])
 
   // Helper function to calculate course progress
-  const calculateCourseProgress = (course: Course, userProgress: UserProgress): number => {
-    // This is a simplified calculation - you might want to implement a more detailed one
-    // based on completed sections/subsections if that data is available
+  const calculateCourseProgress = (courseProgress: CourseProgress | undefined): number => {
 
-    return 30 // Default to 30% as a placeholder
+    if (courseProgress && courseProgress.course_id) return courseProgress.percentage
+
+    return 0
   }
 
   if (loading) {
@@ -89,7 +99,8 @@ const MyCoursesPage = () => {
     'DevOps': 'https://i.ibb.co/6R6MsRvZ/devops.webp',
     'Cloud Computing': 'https://i.ibb.co/WNP55yFF/cloud-computing.webp',
     'Cybersecurity': 'https://i.ibb.co/cq9xKY0/cybersecurity.webp',
-    'Artificial Intelligence': 'https://i.ibb.co/KpQhxcMf/artificial-intelligence.webp'
+    'Artificial Intelligence': 'https://i.ibb.co/KpQhxcMf/artificial-intelligence.webp',
+    'Web Development': 'https://i.ibb.co/8nVQrXVc/web-dev.webp'
   }
 
   return (
@@ -111,9 +122,10 @@ const MyCoursesPage = () => {
               key={course._id}
               className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300"
             >
+
               <div className="relative pb-1/5">
                 <img
-                  src={`${img[course.category]}`}
+                  src={`${img[course.category as keyof typeof img]}`}
                   alt={course.title}
                   className="h-48 w-full object-cover"
                 />
@@ -123,14 +135,6 @@ const MyCoursesPage = () => {
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{course.title}</h2>
                   <span className="badge badge-primary">{course.difficulty}</span>
                 </div>
-
-                {/* <div className="mt-4">
-                  <div className="flex justify-between text-sm mb-1">
-                    <span>Progress</span>
-                    <span>{course.progress}%</span>
-                  </div>
-                  <Progress value={course.progress} className="h-2" />
-                </div> */}
 
                 <div className="mt-4 flex justify-between items-center">
                   <span className="text-sm text-gray-500 dark:text-gray-400">

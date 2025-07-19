@@ -21,7 +21,6 @@ import {
   CheckCircle,
   XCircle,
   Award,
-  ArrowRight,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert";
 import { Progress } from "../../components/ui/progress";
@@ -37,11 +36,11 @@ const AssessmentResultPage: React.FC = () => {
   const [assessementTitle, setAssessmentTitle] = useState<string | undefined>(
     undefined
   );
+  const [courseId, setCourseId] = useState<string>("");
 
   useEffect(() => {
     const fetchResult = async () => {
       try {
-        // console.log(`Assessment ID ${id}`)
         if (!id) {
           setError("Attempt ID is required");
           setLoading(false);
@@ -61,8 +60,10 @@ const AssessmentResultPage: React.FC = () => {
         setResult(recentResult);
         setLoading(false);
 
-        getAssessmentById(id).then((res) =>
-          setAssessmentTitle(res.assessment.title)
+        getAssessmentById(id).then((assessmentObj) => {
+          setAssessmentTitle(assessmentObj.title);
+          setCourseId(assessmentObj.course_id);
+        }
         );
       } catch (err) {
         setError("Failed to load assessment result");
@@ -126,7 +127,7 @@ const AssessmentResultPage: React.FC = () => {
             <CardTitle className="text-lg">Score</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold">{result.score}%</div>
+            <div className="text-4xl font-bold">{Math.ceil((result.score) * 100)}%</div>
             <Progress value={scorePercentage} className="h-2 mt-2" />
           </CardContent>
         </Card>
@@ -136,7 +137,7 @@ const AssessmentResultPage: React.FC = () => {
             <CardTitle className="text-lg">Correct Answers</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold">{result.score}</div>
+            <div className="text-4xl font-bold">{Math.ceil((result.score) * 100)}%</div>
             <Progress value={result.score * 100} className="h-2 mt-2" />
           </CardContent>
         </Card>
@@ -232,9 +233,14 @@ const AssessmentResultPage: React.FC = () => {
           <Button variant="outline" onClick={() => navigate("/dashboard")}>
             Back to Dashboard
           </Button>
-          <Button onClick={() => navigate(`/courses`)} className="gap-1">
-            Explore More Courses <ArrowRight className="h-4 w-4" />
-          </Button>
+          { isPassed && 
+            <Button
+              onClick={() => navigate(`/courses/${courseId}/learn`)}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+            Start Lesson
+            </Button> 
+          }
         </CardFooter>
       </Card>
     </>

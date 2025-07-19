@@ -1,5 +1,5 @@
 import { api } from "./apiClient";
-import type { Assessment, AssessmentResult } from "../types";
+import type { Assessment, AssessmentAdvice, AssessmentResult } from "../types";
 
 export const getAssessmentForCourse = async (
   courseId: string
@@ -8,7 +8,7 @@ export const getAssessmentForCourse = async (
 }> => {
   try {
     const response = await api.get(`/assessments/course/${courseId}`);
-    return response.data.assessments;
+    return response.data;
   } catch (error) {
     console.error(`Get assessment for course ${courseId} API error:`, error);
     throw error;
@@ -17,12 +17,10 @@ export const getAssessmentForCourse = async (
 
 export const getAssessmentById = async (
   assessment_id: string
-): Promise<{
-  assessment: Assessment
-}> => {
+): Promise<Assessment> => {
   try {
     const response = await api.get(`/assessments/${assessment_id}`);
-    return response.data;
+    return response.data.assessment;
   } catch (error) {
     console.error(`Get assessment ${assessment_id} API error:`, error);
     throw error;
@@ -57,6 +55,7 @@ export const submitAssessment = async (
 ): Promise<{
   message: string;
   result: {
+    _id: string;
     score: number;
     passed: boolean;
     knowledge_gaps: string[]
@@ -93,6 +92,21 @@ export const getAssessmentResults = async (
   }
 };
 
+export const getAssessmentResultsByCourseId = async (
+  courseId: string
+): Promise<{
+  result: AssessmentResult; 
+  count: number
+}> => {
+  try {
+    const response = await api.get(`/assessments/results/${courseId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Get assessment result by course ID error:", error);
+    throw error;
+  }
+}
+
 export const getAssessmentResultAverage = async (
   assessmentId: string
 ): Promise<{
@@ -108,6 +122,19 @@ export const getAssessmentResultAverage = async (
     throw error;
   }
 }
+
+export const getAssessmentAdvice = async (
+  courseId: string
+): Promise<AssessmentAdvice> => {
+  try {
+    const response = await api.get(`/assessments/${courseId}/advice`);
+    return response.data;
+  } catch (error) {
+    console.error(`Get assessment result ${courseId} advice API error:`, error);
+    throw error;
+  }
+}
+
 
 export const createAssessment = async (
   assessmentData: Partial<Assessment>

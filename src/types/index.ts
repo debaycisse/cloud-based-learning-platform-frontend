@@ -9,6 +9,13 @@ export interface User {
     progress?: UserProgress
     preferences?: UserPreferences
     course_progress?: CourseProgress
+    cooldown?: Cooldown
+  }
+
+  export interface Cooldown {
+    duration: string
+    course_id: string
+    concepts: string[]
   }
   
   export interface LoginResponse {
@@ -102,6 +109,11 @@ export interface User {
     time_spent: number
     questions: Question[]
   }
+
+  export interface AssessmentResultResponse {
+  result: AssessmentResult
+  count: number
+}
   
   export interface LearningPath {
     _id: string
@@ -152,3 +164,21 @@ export interface User {
     course_id: string
     percentage: number
   }
+
+  export interface AssessmentAdvice {
+    links: LinkData[]
+  }
+
+  export interface LinkData {
+    title: string
+    url: string
+    description?: string
+    tags?: string[]
+  }
+
+  export type Concept = {
+    _id: string;
+    concepts: string[];
+    links: string[];
+    description: string;
+  };

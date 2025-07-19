@@ -1,18 +1,41 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { getCourseById } from "../../services/courseService"
-import { getAssessmentForCourse } from "../../services/assessmentService"
-import { enrollInCourse } from "../../services/userService"
+import {
+  getAssessmentForCourse,
+  getAssessmentResultsByCourseId
+} from "../../services/assessmentService"
+import { enrollInCourse, getUserCooldown } from "../../services/userService"
 import LoadingSpinner from "../../components/common/LoadingSpinner"
 import CourseContentAccordion from "../../components/courses/CourseContentAccordion"
 import { useAuth } from "../../context/AuthContext"
+import type { AssessmentResultResponse, Cooldown } from "../../types"
 
 const CourseDetailPage = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { user } = useAuth()
   const [error, setError] = useState<string | null>(null)
+  const [ assessmentResult, setAssessmentResult ] = 
+    useState<AssessmentResultResponse | null>(null)
+  const [ cooldown, setCooldown ] = useState<Cooldown>()
+
+  useEffect(() => {
+    const fetchAssessmentResult = async () => {
+      const assessmentResultResponse = await getAssessmentResultsByCourseId(id!);
+      setAssessmentResult(assessmentResultResponse);
+      const cooldownResponse = await getUserCooldown();
+      if (cooldownResponse && 'course_id' in cooldownResponse) {
+        setCooldown(cooldownResponse);
+      } else {
+        setCooldown(undefined);
+      }
+      // setCooldown(cooldownResponse);
+    }
+    fetchAssessmentResult();
+  }, [id])
+
 
   // Fetch course data
   const { data: courseData, isLoading: isLoadingCourse } = useQuery(["course", id], () => getCourseById(id!), {
@@ -26,27 +49,36 @@ const CourseDetailPage = () => {
   // Fetch assessment data
   const { data: assessmentData, isLoading: isLoadingAssessment } = useQuery(
     ["assessment", id],
-    () => getAssessmentForCourse(id!),
+    () => (getAssessmentForCourse(id!)),
     {
       enabled: !!id,
       onError: (err) => {
         console.error("Failed to fetch assessment data:", err)
-        // Not setting error here as assessment is optional
+        // We can possibly log the error in future upgrade
       },
     },
   )
   // Enroll mutation
   const enrollMutation = useMutation((courseId: string) => enrollInCourse(courseId), {
     onSuccess: () => {
-      // Present user with assessment based on the course and if their scores are 50 or above navigate to the /course/${id}/learn
       try {
         const assessment = Array.isArray(assessmentData)? assessmentData[0] :
           assessmentData
-        if (assessment) {
+
+        // If the user is having cooldown field in his record
+        if (cooldown && 'concepts' in cooldown) {
+          // navigate to the advice page
+          navigate(`/assessment/${cooldown.course_id}/advise`);
+        }
+
+        if (assessmentResult && assessmentResult.result.passed) {
+          // If the user fails the assessment
+          navigate(`/course/${id}/learn`);
+        } else if (assessment && (!assessmentResult || !assessmentResult.result.passed)) {
           // Navigate to the assessment page
           navigate(`/assessment/${assessment._id}`);
-        } else {
-          // If not assessment, navigate straight to the learning page
+        } else if (!assessment) {
+          // If no assessment, navigate straight to the learning page
           navigate(`/course/${id}/learn`);
         }
       } catch (error) {
@@ -56,7 +88,7 @@ const CourseDetailPage = () => {
     },
     onError: (err) => {
       console.error("Failed to enroll in course:", err)
-      setError("Failed to enroll in course. Please try again later.")
+      setError("Failed to enroll in course. You might need to complete your in-progress course, firstly.")
     },
   })
 
@@ -66,7 +98,9 @@ const CourseDetailPage = () => {
   }
 
   const handleTakeAssessment = () => {
-    if (assessment) {
+    if (cooldown && 'concepts' in cooldown) {
+      navigate(`/assessment/${cooldown.course_id}/advise`);
+    } else if (assessment) {
       navigate(`/assessment/${assessment._id}`)
     }
   }
@@ -150,7 +184,7 @@ const CourseDetailPage = () => {
             </div>
 
             <div className="flex gap-2">
-              {assessment && (
+              {assessment && (!assessmentResult || !assessmentResult.result?.passed) && (
                 <button onClick={handleTakeAssessment} className="btn btn-secondary">
                   <i className="fa-solid fa-clipboard-check mr-2"></i>
                   Take Prerequisite Assessment

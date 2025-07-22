@@ -1,10 +1,11 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAuth } from "../../context/AuthContext"
 import Logo from "../../components/common/Logo"
+import isTokenExpired from "../../utils/auth"
 
 const registerSchema = z
   .object({
@@ -38,6 +39,16 @@ const RegisterPage = () => {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
+
+  useEffect(
+    () => {
+      const token = localStorage.getItem('token');
+      if (token && !isTokenExpired(token)) {
+        navigate('/dashboard')
+      }
+    },
+    []
+  );
 
   const {
     register,

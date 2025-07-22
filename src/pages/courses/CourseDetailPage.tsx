@@ -31,7 +31,6 @@ const CourseDetailPage = () => {
       } else {
         setCooldown(undefined);
       }
-      // setCooldown(cooldownResponse);
     }
     fetchAssessmentResult();
   }, [id])
@@ -62,8 +61,8 @@ const CourseDetailPage = () => {
   const enrollMutation = useMutation((courseId: string) => enrollInCourse(courseId), {
     onSuccess: () => {
       try {
-        const assessment = Array.isArray(assessmentData)? assessmentData[0] :
-          assessmentData
+        const assessment = Array.isArray(assessmentData?.assessments)? assessmentData.assessments[0] :
+          assessmentData?.assessments
 
         // If the user is having cooldown field in his record
         if (cooldown && 'concepts' in cooldown) {
@@ -88,7 +87,10 @@ const CourseDetailPage = () => {
     },
     onError: (err) => {
       console.error("Failed to enroll in course:", err)
-      setError("Failed to enroll in course. You might need to complete your in-progress course, firstly.")
+      setError(
+        "Failed to enroll in course. You might need to complete your\
+         in-progress course, firstly."
+      );
     },
   })
 

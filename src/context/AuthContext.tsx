@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { useNavigate } from "react-router-dom"
 import { loginUser, registerUser, getUserProfile, logoutUser } from "../services/authService"
 import type { User } from "../types"
-import jwtDecode from "jwt-decode"
+import isTokenExpired from "../utils/auth"
 
 interface AuthContextType {
   user: User | null
@@ -16,17 +16,6 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-// Helper function to check if token is expired
-const isTokenExpired = (token: string): boolean => {
-  try {
-    const decoded: any = jwtDecode(token)
-    const currentTime = Date.now() / 1000
-    return decoded.exp < currentTime
-  } catch (error) {
-    return true
-  }
-}
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)

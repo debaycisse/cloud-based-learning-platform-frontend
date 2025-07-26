@@ -11,6 +11,8 @@ import { getCourseById } from "../../services/courseService"
 import { updateProgress } from "../../services/userService"
 import type { Course } from "../../types"
 import { ChevronLeft, ChevronRight, CheckCircle, BookOpen, Clock } from "lucide-react"
+import { completeCourse } from "../../services/courseService"
+import { getUserProgress } from "../../services/userService"
 
 interface CourseProgress {
   currentSectionIndex: number
@@ -21,7 +23,8 @@ interface CourseProgress {
 }
 
 export default function CoursePlayerPage() {
-  const { id } = useParams<{ id: string }>()
+  const { id, percentageValue } = useParams<{ id: string; percentagValue: string }>()
+  // This is the passed percentage value to track sub-section to start displaying from
   const navigate = useNavigate()
 
   const [course, setCourse] = useState<Course | null>(null)
@@ -37,7 +40,10 @@ export default function CoursePlayerPage() {
   const [isUpdatingProgress, setIsUpdatingProgress] = useState(false)
 
   useEffect(() => {
-    if (id) {
+    if (id && percentageValue) {
+      fetchCourseWithContentPoint()
+    }
+    else if (id) {
       fetchCourse()
     }
   }, [id])
@@ -54,6 +60,35 @@ export default function CoursePlayerPage() {
         ...prev,
         totalItems,
         completedItems: 0,
+      }))
+    } catch (err) {
+      setError("Failed to load course")
+      console.error("Error fetching course:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const fetchCourseWithContentPoint = async () => {
+    try {
+      setLoading(true)
+      // Fetch course data
+      const courseData = await getCourseById(id!)
+      setCourse(courseData.course)
+
+      // Fetch content staring point data
+      const userProgressData = (await getUserProgress());
+      const courseProgressData = userProgressData.course_progress[0];
+
+      // Calculate total items and initialize progress
+      const totalItems = calculateTotalItems(courseData.course)
+      setProgress((prev) => ({
+        ...prev,
+        currentSectionIndex: courseProgressData.current_section_index,
+        currentSubsectionIndex: courseProgressData.current_subsection_index,
+        currentDataIndex: courseProgressData.current_data_index,
+        completedItems: courseProgressData.completed_items,
+        totalItems,
       }))
     } catch (err) {
       setError("Failed to load course")
@@ -81,7 +116,11 @@ export default function CoursePlayerPage() {
   const updateUserProgress = async (progressPercentage: number) => {
     try {
       setIsUpdatingProgress(true)
-      await updateProgress(id!, progressPercentage)
+      await updateProgress(
+        id!, progressPercentage, progress.currentSectionIndex,
+        progress.currentSubsectionIndex, progress.currentDataIndex,
+        progress.completedItems
+      )
     } catch (err) {
       console.error("Error updating progress:", err)
     } finally {
@@ -127,9 +166,9 @@ export default function CoursePlayerPage() {
     const progressPercentage = calculateProgressPercentage(newProgress.completedItems, newProgress.totalItems)
     await updateUserProgress(progressPercentage)
 
-    // If course is completed, navigate to completion page or course detail
     if (newProgress.completedItems === newProgress.totalItems) {
-      // navigate(`/courses/${id}?completed=true`)
+      // call the backend to process course completion
+      await completeCourse(id)
       navigate('/progress')
     }
   }
@@ -248,7 +287,7 @@ export default function CoursePlayerPage() {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Header */}
       <div className="mb-6">
-        <Button variant="ghost" onClick={() => navigate(`/courses/${id}`)} className="mb-4">
+        <Button variant="ghost" onClick={() => navigate(`/course/${id}`)} className="mb-4">
           <ChevronLeft className="w-4 h-4 mr-2" />
           Back to Course
         </Button>
@@ -344,211 +383,3 @@ export default function CoursePlayerPage() {
     </div>
   )
 }
-
-
-
-
-
-
-
-
-
-
-// import React, { useEffect, useState } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import { getCourseById, completeCourse } from "../../services/courseService";
-
-// interface Course {
-//   title: string;
-//   description: string;
-//   category: string;
-//   prerequisites: string[];
-//   content: {
-//     sections: Section[];
-//     tags: string[];
-//   };
-//   difficulty: string;
-//   created_at: string;
-//   updated_at: string;
-//   enrollment_count: number;
-//   enrolled_users: string[];
-//   completed_users: string[];
-// }
-
-// interface Section {
-//   section_id: string;
-//   title: string;
-//   order: number;
-//   sub_sections: SubSection[];
-// }
-
-// interface SubSection {
-//   subsection_id: string;
-//   title: string;
-//   order: number;
-//   data: Data[];
-// }
-
-// interface Data {
-//   data_id: string;
-//   order: number;
-//   type: "text" | "image";
-//   content: string;
-// }
-
-// const CoursePlayerPage: React.FC = () => {
-//   const { id } = useParams<{ id: string }>();
-//   const [course, setCourse] = useState<Course | null>(null);
-//   const [loading, setLoading] = useState<boolean>(true);
-//   const [error, setError] = useState<string | null>(null);
-//   const [currentSectionIndex, setCurrentSectionIndex] = useState<number>(0);
-//   const navigate = useNavigate()
-
-//   useEffect(() => {
-//     const fetchCourse = async () => {
-//       try {
-//         if (!id) {
-//           setError("Course ID is missing.");
-//           setLoading(false);
-//           return;
-//         }
-
-//         const response = await getCourseById(id); // Fetch course data from the backend
-//         setCourse(response.course);
-//       } catch (err) {
-//         setError("Failed to load course data. Please try again later.");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchCourse();
-//   }, [id]);
-
-//   const handleNextSection = () => {
-//     if (course && currentSectionIndex < course.content.sections.length - 1) {
-//       setCurrentSectionIndex((prevIndex) => prevIndex + 1);
-//     }
-//   };
-
-//   const handlePreviousSection = () => {
-//     if (currentSectionIndex > 0) {
-//       setCurrentSectionIndex((prevIndex) => prevIndex - 1);
-//     }
-//   };
-
-//   const handleCompleteCourse = async () => {
-//     alert("Congratulations! You have completed this course.");
-//     // Add logic to mark the course as complete in the backend
-//     try {
-//       setLoading(true)
-//       const markComplete = await completeCourse(id)
-//       if (markComplete.message) {
-//         // navigate to courses
-//         navigate('/courses')
-//       } else {
-//         navigate(`/course/${id}/learn`)
-//       }
-//     } catch (error) {
-//       console.error(error)
-//       throw error
-//     }
-//   };
-
-//   if (loading) {
-//     return <div className="text-center py-10">Loading course...</div>;
-//   }
-
-//   if (error || !course) {
-//     return (
-//       <div className="text-center py-10 text-red-500">
-//         {error || "Course not found."}
-//       </div>
-//     );
-//   }
-
-//   const currentSection = course.content.sections[currentSectionIndex];
-
-//   return (
-//     <div className="p-4">
-//       {/* Course Title and Description */}
-//       <h1 className="text-3xl font-bold mb-4">{course.title}</h1>
-//       <p className="text-gray-700 mb-4 dark:text-gray-50">{course.description}</p>
-
-//       {/* Current Section */}
-//       <div className="space-y-8">
-//         <div key={currentSection.section_id} className="border-b pb-4">
-//           <h2 className="text-2xl font-semibold mb-4">{currentSection.title}</h2>
-
-//           {/* Sub-Sections */}
-//           {currentSection.sub_sections.map((subSection) => (
-//             <div key={subSection.subsection_id} className="pl-4 mb-6">
-//               <h3 className="text-xl font-medium mb-2">{subSection.title}</h3>
-
-//               {/* Data (Text or Images) */}
-//               {subSection.data.map((data) => (
-//                 <div key={data.data_id} className="mb-4">
-//                   {data.type === "text" ? (
-//                     <p className="text-gray-800 dark:text-gray-50">{data.content}</p>
-//                   ) : data.type === "image" ? (
-//                     <img
-//                       src={data.content}
-//                       alt={`Content for ${subSection.title}`}
-//                       className="rounded shadow max-w-full h-auto"
-//                     />
-//                   ) : null}
-//                 </div>
-//               ))}
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-
-//       {/* Navigation Buttons */}
-//       <div className="flex justify-between mt-8">
-//         {currentSectionIndex > 0 && (
-//           <button
-//             onClick={handlePreviousSection}
-//             className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-//           >
-//             Previous Section
-//           </button>
-//         )}
-//         {currentSectionIndex < course.content.sections.length - 1 ? (
-//           <button
-//             onClick={handleNextSection}
-//             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-//           >
-//             Next Section
-//           </button>
-//         ) : (
-//           <button
-//             onClick={handleCompleteCourse}
-//             className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-//           >
-//             Complete Course
-//           </button>
-//         )}
-//       </div>
-
-//       {/* Tags */}
-//       {course.content.tags.length > 0 && (
-//         <div className="mt-8">
-//           <h3 className="text-lg font-semibold mb-2">Tags:</h3>
-//           <div className="flex flex-wrap gap-2">
-//             {course.content.tags.map((tag, index) => (
-//               <span
-//                 key={index}
-//                 className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm"
-//               >
-//                 {tag}
-//               </span>
-//             ))}
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default CoursePlayerPage;

@@ -229,7 +229,7 @@ const ProgressPage = () => {
                             </div>
                           </div>
                           <div className="mt-4 md:mt-0 md:ml-4">
-                            <Link to={`/course/${course._id}/learn`} className="btn btn-primary btn-sm">
+                            <Link to={`/course/${course._id}/learn/${courseCompletionPercentage}`} className="btn btn-primary btn-sm">
                               <i className="fa-solid fa-play mr-1"></i>
                               Continue
                             </Link>

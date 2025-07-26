@@ -163,6 +163,11 @@ export interface User {
   export interface CourseProgress {
     course_id: string
     percentage: number
+    completed_course_id: string
+    current_section_index: number
+    current_subsection_index: number
+    current_data_index: number
+    completed_items: number
   }
 
   export interface AssessmentAdvice {

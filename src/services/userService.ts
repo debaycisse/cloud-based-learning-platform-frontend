@@ -52,11 +52,19 @@ export const updateUserPreferences = async (
 }
 
 export const updateProgress = async (
-  courseId: string, percentage: number
+  courseId: string, percentage: number, currentSectionIndex: number,
+  currentSubsectionIndex: number, currentDataIndex: number,
+  completedItems: number
 ): Promise<ProgressResponse> => {
   try {
     const response = await api.put(
-      "/users/progress", { course_id: courseId, percentage: percentage }
+      "/users/progress", { 
+        course_id: courseId, percentage: percentage,
+        current_section_index: currentSectionIndex,
+        current_subsection_index: currentSubsectionIndex,
+        current_data_index: currentDataIndex,
+        completed_items: completedItems
+      }
     )
     return response.data
   } catch (error) {

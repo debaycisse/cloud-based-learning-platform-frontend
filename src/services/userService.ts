@@ -1,8 +1,9 @@
 import { api } from "./apiClient"
-import type { UserProgress, UserPreferences, ProgressResponse, Cooldown } from "../types"
+import type { UserProgress, UserPreferences, ProgressResponse, Cooldown, CourseProgress } from "../types"
 
 export const getUserProgress = async (): Promise<{
   progress: UserProgress;
+  course_progress: CourseProgress;
   assessment_results: any[]
 }> => {
   try {

@@ -1,6 +1,4 @@
-"use client"
-
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { getUserProgress } from "../../services/userService"
 import { getAllCourses } from "../../services/courseService"
@@ -9,7 +7,19 @@ import LoadingSpinner from "../../components/common/LoadingSpinner"
 import { Link } from "react-router-dom"
 
 const ProgressPage = () => {
-  const [activeTab, setActiveTab] = useState<"courses" | "assessments">("courses")
+  const [activeTab, setActiveTab] = useState<"courses" | "assessments">("courses");
+  const [courseCompletionPercentage, setCourseCompletionPercentage] = useState(0);
+
+  useEffect(
+    () => {
+      async function fetchCoursePogress() {
+        const { course_progress } = await getUserProgress();
+        setCourseCompletionPercentage(course_progress[0].percentage)
+      }
+      fetchCoursePogress();
+    },
+    []
+  );
 
   // Fetch user progress
   const {
@@ -61,22 +71,14 @@ const ProgressPage = () => {
   const inProgressCourses = allCourses.filter((course) => progress.in_progress_courses.includes(course._id))
   const completedCourses = allCourses.filter((course) => progress.completed_courses.includes(course._id))
 
-  // Calculate overall progress
+  // Calculate overall 
   const totalCourses = inProgressCourses.length + completedCourses.length
-  const completionPercentage = totalCourses > 0 ? (completedCourses.length / totalCourses) * 100 : 0
 
   // Calculate assessment stats
   const passedAssessments = assessmentResults.filter((result) => result.passed).length
   const failedAssessments = assessmentResults.filter((result) => !result.passed).length
   const totalAssessments = assessmentResults.length
   const assessmentSuccessRate = totalAssessments > 0 ? (passedAssessments / totalAssessments) * 100 : 0
-
-  // Calculate progress percentage for in-progress courses (placeholder logic)
-  const getProgressPercentage = (courseId: string) => {
-    // This would normally come from the API with actual progress data
-    // For now, we'll generate a random percentage between 10-90%
-    return Math.floor(Math.random() * 81) + 10
-  }
 
   return (
     <div className="space-y-6">
@@ -107,10 +109,10 @@ const ProgressPage = () => {
           <div className="mt-4">
             <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
               <span>Course Completion</span>
-              <span>{Math.round(completionPercentage)}%</span>
+              <span>{courseCompletionPercentage}%</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
-              <div className="bg-primary-600 h-2 rounded-full" style={{ width: `${completionPercentage}%` }}></div>
+              <div className="bg-primary-600 h-2 rounded-full" style={{ width: `${courseCompletionPercentage}%` }}></div>
             </div>
           </div>
         </div>
@@ -149,11 +151,10 @@ const ProgressPage = () => {
             {[1, 2, 3, 4, 5, 6, 7].map((day) => (
               <div key={day} className="flex flex-col items-center">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs ${
-                    day <= 7
-                      ? "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400"
-                      : "bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500"
-                  }`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs ${day <= 7
+                    ? "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400"
+                    : "bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500"
+                    }`}
                 >
                   {day <= 7 && <i className="fa-solid fa-check"></i>}
                 </div>
@@ -169,11 +170,10 @@ const ProgressPage = () => {
         <nav className="flex space-x-8" aria-label="Progress tabs">
           <button
             onClick={() => setActiveTab("courses")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === "courses"
-                ? "border-primary-500 text-primary-600 dark:text-primary-400"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
-            }`}
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "courses"
+              ? "border-primary-500 text-primary-600 dark:text-primary-400"
+              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+              }`}
             aria-current={activeTab === "courses" ? "page" : undefined}
           >
             <i className="fa-solid fa-book mr-2"></i>
@@ -181,11 +181,10 @@ const ProgressPage = () => {
           </button>
           <button
             onClick={() => setActiveTab("assessments")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === "assessments"
-                ? "border-primary-500 text-primary-600 dark:text-primary-400"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
-            }`}
+            className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === "assessments"
+              ? "border-primary-500 text-primary-600 dark:text-primary-400"
+              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300"
+              }`}
             aria-current={activeTab === "assessments" ? "page" : undefined}
           >
             <i className="fa-solid fa-clipboard-check mr-2"></i>
@@ -207,7 +206,6 @@ const ProgressPage = () => {
               {inProgressCourses.length > 0 ? (
                 <div className="space-y-4">
                   {inProgressCourses.map((course) => {
-                    const progressPercent = getProgressPercentage(course._id)
                     return (
                       <div key={course._id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
                         <div className="flex flex-col md:flex-row md:items-center justify-between">
@@ -221,12 +219,12 @@ const ProgressPage = () => {
                           <div className="mt-4 md:mt-0 md:ml-4 md:w-1/3">
                             <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
                               <span>Progress</span>
-                              <span>{progressPercent}%</span>
+                              <span>{courseCompletionPercentage}%</span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
                               <div
                                 className="bg-primary-600 h-2 rounded-full"
-                                style={{ width: `${progressPercent}%` }}
+                                style={{ width: `${courseCompletionPercentage}%` }}
                               ></div>
                             </div>
                           </div>

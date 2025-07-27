@@ -17,15 +17,25 @@ const CourseContentAccordion = ({ sections }: CourseContentAccordionProps) => {
   }
 
   // Sort sections by order
-  const sortedSections = [...sections].sort((a, b) => a.order - b.order)
+  const sortedSections = [...sections].sort((a, b) => {
+    if (a.order && b.order) {
+      return a.order - b.order
+    }
+    return 0
+  })
 
   return (
     <div className="space-y-2">
       {sortedSections.map((section) => {
-        const isOpen = openSections.includes(section.section_id)
+        const isOpen = section.section_id? openSections.includes(section.section_id) : false
 
         // Sort subsections by order
-        const sortedSubsections = [...section.sub_sections].sort((a, b) => a.order - b.order)
+        const sortedSubsections = [...section.sub_sections].sort((a, b) => {
+          if (a.order && b.order) {
+            return a.order - b.order
+          }
+          return 0
+        })
 
         return (
           <div
@@ -33,7 +43,7 @@ const CourseContentAccordion = ({ sections }: CourseContentAccordionProps) => {
             className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden"
           >
             <button
-              onClick={() => toggleSection(section.section_id)}
+              onClick={() => toggleSection(section.section_id? section.section_id : '')}
               className="w-full flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               aria-expanded={isOpen}
             >

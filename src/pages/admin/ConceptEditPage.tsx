@@ -35,12 +35,20 @@ const ConceptEditPage = () => {
     },
   });
 
-  const { fields: conceptFields, append: appendConcept, remove: removeConcept } = useFieldArray({
+  const {
+    fields: conceptFields,
+    append: appendConcept,
+    remove: removeConcept
+  } = useFieldArray<any>({
     control,
     name: "concepts",
   });
 
-  const { fields: linkFields, append: appendLink, remove: removeLink } = useFieldArray({
+  const {
+    fields: linkFields,
+    append: appendLink,
+    remove: removeLink
+  } = useFieldArray<any>({
     control,
     name: "links",
   });

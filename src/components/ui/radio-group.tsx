@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithoutRef, ElementRef, forwardRef, createContext, useContext } from "react";
+import React, { ComponentPropsWithoutRef, forwardRef, createContext, useContext } from "react";
 import { cn } from "../../utils/cn";
 
 const RadioGroupContext = createContext<{ value?: string; onValueChange?: (value: string) => void }>({});

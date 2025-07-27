@@ -23,8 +23,9 @@ interface CourseProgress {
 }
 
 export default function CoursePlayerPage() {
-  const { id, percentageValue } = useParams<{ id: string; percentagValue: string }>()
-  // This is the passed percentage value to track sub-section to start displaying from
+  // percentagValue is used to track the point of course continuation
+
+  const { id, percentagValue } = useParams<{ id: string; percentagValue: string }>()
   const navigate = useNavigate()
 
   const [course, setCourse] = useState<Course | null>(null)
@@ -40,7 +41,7 @@ export default function CoursePlayerPage() {
   const [isUpdatingProgress, setIsUpdatingProgress] = useState(false)
 
   useEffect(() => {
-    if (id && percentageValue) {
+    if (id && percentagValue) {
       fetchCourseWithContentPoint()
     }
     else if (id) {

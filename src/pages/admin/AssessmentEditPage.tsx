@@ -203,12 +203,18 @@ const AssessmentEditPage = () => {
     value: string
   ) => {
     const updatedQuestions = [...questions];
+    if (!updatedQuestions[questionIndex].tags) {
+      updatedQuestions[questionIndex].tags = [];
+    }
     updatedQuestions[questionIndex].tags[tagIndex] = value;
     setValue("questions", updatedQuestions);
   };
 
   const removeTag = (questionIndex: number, tagIndex: number) => {
     const updatedQuestions = [...questions];
+    if (!updatedQuestions[questionIndex].tags) {
+      updatedQuestions[questionIndex].tags = []
+    }
     updatedQuestions[questionIndex].tags = updatedQuestions[
         questionIndex
       ].tags.filter((_, i) => i !== tagIndex);

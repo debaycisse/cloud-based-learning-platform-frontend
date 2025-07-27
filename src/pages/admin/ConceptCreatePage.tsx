@@ -18,26 +18,34 @@ const ConceptCreatePage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+    const {
+      register,
+      handleSubmit,
+      control,
+      formState: { errors },
+    } = useForm<ConceptFormData>({
+      resolver: zodResolver(conceptSchema),
+      defaultValues: {
+        concepts: [""],
+        links: [""],
+        description: "",
+      },
+    });
+
   const {
-    register,
-    handleSubmit,
+    fields: conceptFields,
+    append: appendConcept,
+    remove: removeConcept 
+  } = useFieldArray<any>({
     control,
-    formState: { errors },
-  } = useForm<ConceptFormData>({
-    resolver: zodResolver(conceptSchema),
-    defaultValues: {
-      concepts: [""],
-      links: [""],
-      description: "",
-    },
+    name: "concepts"
   });
 
-  const { fields: conceptFields, append: appendConcept, remove: removeConcept } = useFieldArray({
-    control,
-    name: "concepts",
-  });
-
-  const { fields: linkFields, append: appendLink, remove: removeLink } = useFieldArray({
+  const {
+    fields: linkFields,
+    append: appendLink,
+    remove: removeLink
+  } = useFieldArray<any>({
     control,
     name: "links",
   });

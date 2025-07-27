@@ -142,7 +142,7 @@ export interface User {
   }
 
   export interface PaginatedResponse<T> {
-    data: T[]
+    learning_paths: T[]
     count: number
     skip: number
     limit: number

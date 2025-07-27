@@ -31,7 +31,7 @@ export interface User {
   }
   
   export interface Course {
-    _id: string
+    _id?: string
     title: string
     description: string
     category: string
@@ -49,24 +49,24 @@ export interface User {
   }
   
   export interface CourseSection {
-    section_id: string
+    section_id?: string
     title: string
-    order: number
+    order?: number
     sub_sections: CourseSubSection[]
   }
   
   export interface CourseSubSection {
-    subsection_id: string
+    subsection_id?: string
     title: string
-    order: number
+    order?: number
     data: CourseContent[]
   }
   
   export interface CourseContent {
-    data_id: string
+    data_id?: string
     type: "text" | "image" | "video" | "code"
     content: string
-    order: number
+    order?: number
     language?: string
     url?: string
     alt_text?: string
@@ -127,7 +127,7 @@ export interface User {
   }
   
   export interface UserProgress {
-    completed_courses: CourseProgress[]
+    completed_courses: string[]
     in_progress_courses: string[]
     completed_assessments: string[]
   }

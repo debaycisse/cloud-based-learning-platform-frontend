@@ -230,8 +230,8 @@ const AdminLearningPathEditPage = () => {
                   <input
                     type="checkbox"
                     id={`course-${course._id}`}
-                    checked={formData.courses.includes(course._id)}
-                    onChange={() => handleCourseToggle(course._id)}
+                    checked={formData.courses.includes(course._id? course._id : '')}
+                    onChange={() => handleCourseToggle(course._id? course._id : '')}
                     className="mt-1"
                   />
                   <div className="flex-1">

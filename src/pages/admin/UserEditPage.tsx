@@ -1,6 +1,6 @@
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { getUserById, updateUser } from "../../services/userService"
@@ -19,7 +19,6 @@ const UserEditPage = () => {
 
   // Fetch user data
   const {
-    data: userData,
     isLoading,
     error,
   } = useQuery(["user", userId], () => getUserById(userId || ""), {

@@ -118,7 +118,7 @@ const ConceptEditPage = () => {
                   <div key={field.id} className="flex items-center">
                     <input
                       type="text"
-                      className={`flex-1 rounded-md border ${errors.concepts?.[index] ? "border-red-500" : "border-gray-300"} shadow-sm p-2`}
+                      className={`flex-1 rounded-md border ${errors.concepts?.[index] ? "border-red-500" : "border-gray-300"} shadow-sm p-2 dark:text-secondary-500`}
                       placeholder={`Concept ${index + 1}`}
                       {...register(`concepts.${index}`)}
                     />
@@ -144,7 +144,7 @@ const ConceptEditPage = () => {
                   <div key={field.id} className="flex items-center">
                     <input
                       type="text"
-                      className={`flex-1 rounded-md border ${errors.links?.[index] ? "border-red-500" : "border-gray-300"} shadow-sm p-2`}
+                      className={`flex-1 rounded-md border ${errors.links?.[index] ? "border-red-500" : "border-gray-300"} shadow-sm p-2 dark:text-secondary-500`}
                       placeholder={`Link ${index + 1}`}
                       {...register(`links.${index}`)}
                     />
@@ -166,7 +166,7 @@ const ConceptEditPage = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
               <textarea
-                className={`mt-1 block w-full rounded-md border ${errors.description ? "border-red-500" : "border-gray-300"} shadow-sm p-2`}
+                className={`mt-1 block w-full rounded-md border ${errors.description ? "border-red-500" : "border-gray-300"} shadow-sm p-2 dark:text-secondary-500`}
                 rows={3}
                 placeholder="Short description of the concept"
                 {...register("description")}

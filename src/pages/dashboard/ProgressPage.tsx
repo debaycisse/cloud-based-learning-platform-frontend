@@ -60,7 +60,10 @@ const ProgressPage = () => {
     )
   }
 
-  const progress: { in_progress_courses: string[]; completed_courses: string[] } = progressData?.progress || {
+  const progress: {
+    in_progress_courses: string[];
+    completed_courses: string[];
+  } = progressData?.progress || {
     in_progress_courses: [],
     completed_courses: [],
   }
@@ -68,8 +71,8 @@ const ProgressPage = () => {
   const assessmentResults = assessmentResultsData?.results || []
 
   // Get course details for enrolled courses
-  const inProgressCourses = allCourses.filter((course) => progress.in_progress_courses.includes(course._id))
-  const completedCourses = allCourses.filter((course) => progress.completed_courses.includes(course._id))
+  const inProgressCourses = allCourses.filter((course) => progress.in_progress_courses.includes(course._id? course._id: ""))
+  const completedCourses = allCourses.filter((course) => progress.completed_courses.includes(course._id? course._id: ""))
 
   // Calculate overall 
   const totalCourses = inProgressCourses.length + completedCourses.length

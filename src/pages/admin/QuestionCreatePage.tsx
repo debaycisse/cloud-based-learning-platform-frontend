@@ -40,7 +40,7 @@ const QuestionCreatePage = () => {
   })
 
   // Use field array for dynamic options
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<any>({
     control,
     name: "options",
   })

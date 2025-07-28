@@ -18,7 +18,7 @@ const MyCoursesPage = () => {
       try {
         setLoading(true)
         // Get user progress which includes enrolled courses
-        const { progress } = await getUserProgress()
+        const { progress, course_progress } = await getUserProgress()
 
         // Combine in-progress and completed courses
         const combinedIds = [progress.in_progress_courses, ...progress.completed_courses]
@@ -36,11 +36,13 @@ const MyCoursesPage = () => {
             const { course } = await getCourseById(courseId)
 
             // Calculate progress percentage
-            const theCourseProgress = progress.completed_courses.
-              find((courseProgress) => courseProgress.course_id === courseId)
+            const theCourseCompleted = progress.completed_courses.
+              find((completedCourse) => completedCourse === courseId)
+            
+            const theCourseProgress = course_progress.find(cp_obj => cp_obj.course_id === courseId)
 
-            const isCompleted = theCourseProgress && theCourseProgress.percentage === 100
-            const progressPercentage = isCompleted ? 100 : calculateCourseProgress(theCourseProgress)
+            const isCompleted = theCourseCompleted? true : false
+            const progressPercentage = isCompleted ? 100 : theCourseProgress?.percentage
 
             return {
               ...course,

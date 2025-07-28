@@ -65,12 +65,14 @@ const AdminCoursesPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages))
   }
 
-  const handleDeleteClick = (courseId: string) => {
-    setShowDeleteConfirm(courseId)
+  const handleDeleteClick = (courseId: string | undefined) => {
+    if (courseId)
+      setShowDeleteConfirm(courseId)
   }
 
-  const handleConfirmDelete = (courseId: string) => {
-    deleteMutation.mutate(courseId)
+  const handleConfirmDelete = (courseId: string | undefined) => {
+    if (courseId)
+      deleteMutation.mutate(courseId)
   }
 
   const handleCancelDelete = () => {

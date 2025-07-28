@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react"
-import { useNavigate, Link } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { getQuestions, deleteQuestion } from "../../services/questionService"
 import type { Question } from "../../types"
 
 const QuestionsPage = () => {
-  const navigate = useNavigate()
   const [questions, setQuestions] = useState<Question[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)

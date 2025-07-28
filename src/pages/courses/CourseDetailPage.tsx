@@ -96,7 +96,7 @@ const CourseDetailPage = () => {
 
   const handleEnroll = () => {
     if (!course || !user) return
-    enrollMutation.mutate(course._id)
+    enrollMutation.mutate(course._id? course._id : "")
   }
 
   const handleTakeAssessment = () => {

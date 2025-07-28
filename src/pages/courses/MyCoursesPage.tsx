@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { getUserProgress } from "../../services/userService"
 import { getCourseById } from "../../services/courseService"
-import type { Course, CourseProgress } from "../../types"
+import type { Course } from "../../types"
 import LoadingSpinner from "../../components/common/LoadingSpinner"
 // import { Progress } from "../../components/ui/progress"
 
@@ -68,14 +68,6 @@ const MyCoursesPage = () => {
 
     fetchMyCourses()
   }, [])
-
-  // Helper function to calculate course progress
-  const calculateCourseProgress = (courseProgress: CourseProgress | undefined): number => {
-
-    if (courseProgress && courseProgress.course_id) return courseProgress.percentage
-
-    return 0
-  }
 
   if (loading) {
     return (

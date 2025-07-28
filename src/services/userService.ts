@@ -3,7 +3,7 @@ import type { UserProgress, UserPreferences, ProgressResponse, Cooldown, CourseP
 
 export const getUserProgress = async (): Promise<{
   progress: UserProgress;
-  course_progress: CourseProgress;
+  course_progress: CourseProgress[];
   assessment_results: any[]
 }> => {
   try {

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCourseById, updateCourse } from "../../services/courseService";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { Course, CourseSection } from "../../types";
+import { Course } from "../../types";
 
 const CourseEditPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -82,39 +82,39 @@ const CourseEditPage = () => {
     }));
   };
 
-  const handleSectionChange = (
-    sectionIndex: number,
-    field: keyof CourseSection,
-    value: string
-  ) => {
-    setFormData((prev) => {
-      // Create a copy of the existing sections array or an empty array if it doesn't exist
-      const currentSections = prev.content?.sections || [];
+  // const handleSectionChange = (
+  //   sectionIndex: number,
+  //   field: keyof CourseSection,
+  //   value: string
+  // ) => {
+  //   setFormData((prev) => {
+  //     // Create a copy of the existing sections array or an empty array if it doesn't exist
+  //     const currentSections = prev.content?.sections || [];
       
-      // Make sure the section at the specified index exists
-      const updatedSections = [...currentSections];
+  //     // Make sure the section at the specified index exists
+  //     const updatedSections = [...currentSections];
       
-      // If the section doesn't exist yet, initialize it
-      if (!updatedSections[sectionIndex]) {
-        updatedSections[sectionIndex] = {} as CourseSection;
-      }
+  //     // If the section doesn't exist yet, initialize it
+  //     if (!updatedSections[sectionIndex]) {
+  //       updatedSections[sectionIndex] = {} as CourseSection;
+  //     }
       
-      // Update the specific field of the section
-      updatedSections[sectionIndex] = {
-        ...updatedSections[sectionIndex],
-        [field]: value
-      };
+  //     // Update the specific field of the section
+  //     updatedSections[sectionIndex] = {
+  //       ...updatedSections[sectionIndex],
+  //       [field]: value
+  //     };
       
-      return {
-        ...prev,
-        content: {
-          ...prev.content,
-          sections: updatedSections,
-          tags: prev.content?.tags || []  // Preserve tags
-        }
-      };
-    });
-  };
+  //     return {
+  //       ...prev,
+  //       content: {
+  //         ...prev.content,
+  //         sections: updatedSections,
+  //         tags: prev.content?.tags || []  // Preserve tags
+  //       }
+  //     };
+  //   });
+  // };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

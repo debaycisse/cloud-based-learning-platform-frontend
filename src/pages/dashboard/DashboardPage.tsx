@@ -7,6 +7,9 @@ import DashboardStats from "../../components/dashboard/DashboardStats"
 import CourseCard from "../../components/courses/CourseCard"
 import LearningPathCard from "../../components/dashboard/LearningPathCard"
 import LoadingSpinner from "../../components/common/LoadingSpinner"
+import { getCourseById } from "../../services/courseService"
+import { getCooldownHistoryByUserId } from "../../services/cooldownHistoryService"
+import { getAssessmentResultsByCourseId } from "../../services/assessmentService"
 
 const DashboardPage = () => {
   const { user } = useAuth()
@@ -31,9 +34,33 @@ const DashboardPage = () => {
     error: progressError,
   } = useQuery(["userProgress"], () => getUserProgress())
 
+  const {
+    data: inProgressCourseData,
+    isLoading: isLoadingInProgressCourse,
+    error: inProgressCourseError
+  } = useQuery(["inProgressCourse"], () => getCourseById(
+    progressData?.progress.in_progress_courses ? progressData?.progress.in_progress_courses : ''))
 
-  const isLoading = isLoadingCourses || isLoadingPaths || isLoadingProgress
-  const error = coursesError || pathsError || progressError
+  const {
+    data: cooldownHistoryData,
+    isLoading: isLoadingCooldownHistory,
+    error: cooldownHistoryError
+  } = useQuery(["cooldownHistory"], () => getCooldownHistoryByUserId(user? user._id : ''))
+
+  const {
+    data: assessmentResultData,
+    isLoading: isLoadingAssessmentResult,
+    error: assessmentResultError
+  } = useQuery(["assessmentResult"], () => getAssessmentResultsByCourseId(
+    inProgressCourseData?.course._id ? inProgressCourseData.course._id : ''
+  ))
+
+
+  const isLoading = isLoadingCourses || isLoadingPaths ||
+  isLoadingProgress || isLoadingInProgressCourse || isLoadingAssessmentResult ||
+  isLoadingCooldownHistory;
+  const error = coursesError || pathsError || progressError ||
+  inProgressCourseError || cooldownHistoryError || assessmentResultError;
 
   if (isLoading) {
     return <LoadingSpinner />
@@ -54,6 +81,21 @@ const DashboardPage = () => {
   const recommendedCourses = recommendedCoursesData?.recommended_courses || []
   const recommendedPaths = recommendedPathsData?.recommended_paths || []
   const progress = progressData?.progress || null
+  const cooldownHistory = cooldownHistoryData?.cooldown || null
+  const assessmentResult = assessmentResultData?.result || null
+
+  const currentDateAndTime = new Date();
+  const cooldownHistoryEndDateAndTime = new Date(
+    cooldownHistory? cooldownHistory.cooldown_end : 
+    new Date(Date.now() - 60 * 60 * 1000).toISOString()
+  )
+  const cooldownHistoryElapsed = currentDateAndTime > cooldownHistoryEndDateAndTime
+
+  const emptyCourse = {
+    title: '', description: '', category: '', difficulty: '', prerequisites: [],
+    content: { sections: [], tags: [], }, enrollment_count: 0, enrolled_users: [],
+    completed_users: [], created_at: '', updated_at: '',
+  }
 
   return (
     <div className="space-y-6">
@@ -94,11 +136,20 @@ const DashboardPage = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* In progress courses would be displayed here */}
-            <div className="card p-4 flex items-center justify-center h-40 bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600">
-              <p className="text-gray-500 dark:text-gray-400 text-center">
-                <i className="fa-solid fa-hourglass-half text-2xl mb-2 block"></i>
-                Your in-progress courses will appear here
+            <div className="card p-4 flex items-center justify-center h-55 bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600">
+              {progress.in_progress_courses.length > 0 ? (
+                <CourseCard
+                  key={progress?.in_progress_courses}
+                  course={inProgressCourseData?.course ? inProgressCourseData?.course : emptyCourse}
+                  passedAssessment={assessmentResult? assessmentResult.passed : false}
+                  cooldownElapsed={cooldownHistoryElapsed}
+                />
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400 text-center">
+                  <i className="fa-solid fa-hourglass-half text-2xl mb-2 block"></i>
+                  Your in-progress courses will appear here
               </p>
+              )}
             </div>
           </div>
         </div>

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { getUserProgress } from "../../services/userService"
 import { getAllCourses } from "../../services/courseService"
-import { getAssessmentResults } from "../../services/assessmentService"
+import { getAssessmentResults, getAssessmentResultsByCourseId } from "../../services/assessmentService"
 import LoadingSpinner from "../../components/common/LoadingSpinner"
 import { Link } from "react-router-dom"
+import { UserProgress } from "../../types"
 
 const ProgressPage = () => {
   const [activeTab, setActiveTab] = useState<"courses" | "assessments">("courses");
@@ -42,8 +43,16 @@ const ProgressPage = () => {
     error: assessmentsError,
   } = useQuery(["assessmentResults"], () => getAssessmentResults())
 
-  const isLoading = isLoadingProgress || isLoadingCourses || isLoadingAssessments
-  const error = progressError || coursesError || assessmentsError
+  const {
+    data: assessmentResultByCourseData,
+    isLoading: isLoadingAssessmentResultByCourse,
+    error: assessmentResultByCourseError,
+  } = useQuery(["assessmentResultByCourseID"], () => getAssessmentResultsByCourseId(
+    progressData? progressData.progress.in_progress_courses : ""
+  ))
+
+  const isLoading = isLoadingProgress || isLoadingCourses || isLoadingAssessments || isLoadingAssessmentResultByCourse
+  const error = progressError || coursesError || assessmentsError || assessmentResultByCourseError
 
   if (isLoading) {
     return <LoadingSpinner />
@@ -60,12 +69,10 @@ const ProgressPage = () => {
     )
   }
 
-  const progress: {
-    in_progress_courses: string[];
-    completed_courses: string[];
-  } = progressData?.progress || {
-    in_progress_courses: [],
-    completed_courses: [],
+  const progress: UserProgress = progressData?.progress || {
+    in_progress_courses: "",
+    completed_courses: [""],
+    completed_assessments: [""]
   }
   const allCourses = coursesData?.courses || []
   const assessmentResults = assessmentResultsData?.results || []
@@ -232,10 +239,21 @@ const ProgressPage = () => {
                             </div>
                           </div>
                           <div className="mt-4 md:mt-0 md:ml-4">
-                            <Link to={`/course/${course._id}/learn/${courseCompletionPercentage}`} className="btn btn-primary btn-sm">
-                              <i className="fa-solid fa-play mr-1"></i>
-                              Continue
-                            </Link>
+                            {assessmentResultByCourseData && assessmentResultByCourseData.result.passed ? (
+                                <Link to={`/course/${course._id}/learn/${courseCompletionPercentage}`} className="btn btn-primary btn-sm">
+                                  <i className="fa-solid fa-play mr-1"></i>
+                                  Continue
+                                </Link>) : (
+                                <Link to={`/course/${course._id}/learn/${courseCompletionPercentage}`} 
+                                className="btn btn-primary btn-sm pointer-events-none opacity-50"
+                                onClick={(e) => e.preventDefault()}
+                                >
+                                  <i className="fa-solid fa-play mr-1"></i>
+                                  Continue
+                                </Link>
+                              )
+
+                            }
                           </div>
                         </div>
                       </div>

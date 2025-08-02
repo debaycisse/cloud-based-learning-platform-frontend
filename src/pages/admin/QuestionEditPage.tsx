@@ -15,14 +15,6 @@ const questionSchema = z.object({
 
 type QuestionFormData = z.infer<typeof questionSchema>
 
-// Define the form data type explicitly
-// type QuestionFormData = {
-//     question_text: string;
-//     options: string[];
-//     correct_answer: string;
-//     tags?: string[];
-//   };
-
 const QuestionEditPage = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -50,7 +42,7 @@ const QuestionEditPage = () => {
     },
   })
 
-const { fields, append, remove } = useFieldArray<any>({
+  const { fields, append, remove } = useFieldArray<any>({
     control,
     name: "options",
   })
@@ -151,9 +143,8 @@ const { fields, append, remove } = useFieldArray<any>({
               <textarea
                 id="question_text"
                 rows={3}
-                className={`mt-1 block w-full rounded-md border dark:text-gray-700 ${
-                  errors.question_text ? "border-red-500" : "border-gray-300"
-                } shadow-sm p-2 focus:border-primary-500 focus:ring-primary-500`}
+                className={`mt-1 block w-full rounded-md border dark:text-gray-700 ${errors.question_text ? "border-red-500" : "border-gray-300"
+                  } shadow-sm p-2 focus:border-primary-500 focus:ring-primary-500`}
                 placeholder="Enter your question here..."
                 {...register("question_text")}
               ></textarea>
@@ -169,9 +160,8 @@ const { fields, append, remove } = useFieldArray<any>({
                   <div key={field.id} className="flex items-center">
                     <input
                       type="text"
-                      className={`flex-1 rounded-md border dark:text-gray-700 ${
-                        errors.options?.[index] ? "border-red-500" : "border-gray-300"
-                      } shadow-sm p-2 focus:border-primary-500 focus:ring-primary-500`}
+                      className={`flex-1 rounded-md border dark:text-gray-700 ${errors.options?.[index] ? "border-red-500" : "border-gray-300"
+                        } shadow-sm p-2 focus:border-primary-500 focus:ring-primary-500`}
                       placeholder={`Option ${index + 1}`}
                       {...register(`options.${index}`)}
                     />
@@ -208,9 +198,8 @@ const { fields, append, remove } = useFieldArray<any>({
               <input
                 id="correct_answer"
                 type="text"
-                className={`mt-1 block w-full rounded-md border dark:text-gray-700 ${
-                  errors.correct_answer ? "border-red-500" : "border-gray-300"
-                } shadow-sm p-2 focus:border-primary-500 focus:ring-primary-500`}
+                className={`mt-1 block w-full rounded-md border dark:text-gray-700 ${errors.correct_answer ? "border-red-500" : "border-gray-300"
+                  } shadow-sm p-2 focus:border-primary-500 focus:ring-primary-500`}
                 placeholder="Enter the correct answer"
                 {...register("correct_answer")}
               />

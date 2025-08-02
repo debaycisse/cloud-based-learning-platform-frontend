@@ -17,6 +17,20 @@ export interface User {
     course_id: string
     concepts: string[]
   }
+
+  export interface CooldownHistory {
+    _id?: string
+    user_id: string
+    cooldown_end: string
+    created_at: string
+    cool_downs: Cool_downs[]
+  }
+
+  export interface Cool_downs {
+    course_id: string
+    concepts: string[]
+    created_at: string
+  }
   
   export interface LoginResponse {
     message: string
@@ -128,7 +142,7 @@ export interface User {
   
   export interface UserProgress {
     completed_courses: string[]
-    in_progress_courses: string[]
+    in_progress_courses: string
     completed_assessments: string[]
   }
   

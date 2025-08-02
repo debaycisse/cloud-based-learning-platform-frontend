@@ -3,10 +3,17 @@ import type { Course } from "../../types"
 
 interface CourseCardProps {
   course: Course
+  resume?: boolean
+  percentage?: number
+  cooldownElapsed?: boolean
+  passedAssessment?: boolean
+
 }
 
 
-const CourseCard = ({ course }: CourseCardProps) => {
+const CourseCard = ({
+  course, resume, percentage=0, cooldownElapsed, passedAssessment
+}: CourseCardProps) => {
   const img = course.category === 'Programming'? 'https://i.ibb.co/hnZ9kf7/programming.webp' :
     course.category === 'Data Science'? 'https://i.ibb.co/PZm982nX/data-science.webp' :
     course.category === 'Web Development'? 'https://i.ibb.co/8nVQrXVc/web-dev.webp' :
@@ -16,6 +23,12 @@ const CourseCard = ({ course }: CourseCardProps) => {
     course.category === 'Cybersecurity'? 'https://i.ibb.co/cq9xKY0/cybersecurity.webp':
     course.category === 'Artificial Intelligence'? 'https://i.ibb.co/KpQhxcMf/artificial-intelligence.webp':
     'https://i.ibb.co/63Dv0cm/tech-tools.webp'
+
+
+  // Is it an in-progress course
+
+
+  // Is it 
 
   return (
     <div className="card hover:shadow-lg transition-shadow duration-300">
@@ -39,13 +52,42 @@ const CourseCard = ({ course }: CourseCardProps) => {
               {course.content.sections.length} sections
             </span>
           </div>
-          <Link
-            to={`/course/${course._id}`}
-            className="text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
-          >
-            <i className="fa-solid fa-arrow-right mr-1"></i>
-            View Details
-          </Link>
+          {resume === true && percentage >= 0 ? (
+            <Link
+              to={`/course/${course._id}/learn/${percentage}`}
+              className="text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
+            >
+              <i className="fa-solid fa-spinner-right mr-1"></i>
+              Resume
+            </Link>
+          ) : passedAssessment === false ? cooldownElapsed === true ? (
+            <Link
+              to={`/course/${course._id}`}
+              className="text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
+            >
+              <i className="fa-solid fa-arrow-right mr-1"></i>
+              Take Assessment
+            </Link>
+          ) : (
+            <Link
+              to={`/course/${course._id}`}
+              className="text-sm font-medium text-primary-600 hover:text-primary-500 pointer-events-none opacity-50 dark:text-primary-400"
+              onClick={e => e.preventDefault()}
+            >
+              <i className="fa-solid fa-arrow-right mr-1"></i>
+              Take Assessment
+            </Link>
+          ) : (
+            <Link
+              to={`/course/${course._id}`}
+              className="text-sm font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
+            >
+              <i className="fa-solid fa-spinner-right mr-1"></i>
+              View Details
+            </Link>
+          )
+
+          }
         </div>
       </div>
     </div>

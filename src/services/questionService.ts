@@ -111,7 +111,12 @@ export const updateQuestion = async (
     question: Question;
 }> => {
   try {
-    const response = await api.put(`/questions/${questionId}`, { question });
+    const response = await api.put(`/questions/${questionId}`, {
+      question_text: question.question_text,
+      options: question.options,
+      correct_answer: question.correct_answer,
+      tags: question.tags
+     });
     return response.data;
   } catch (error) {
     console.error(`Update question ${questionId} API error:`, error);

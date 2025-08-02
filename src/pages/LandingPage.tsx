@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { getPopularCourses } from "../services/courseService"
@@ -27,6 +25,8 @@ const LandingPage = () => {
 
     fetchPopularCourses()
   }, [])
+
+  const imgSrc = new URL('../assets/images/learning_illustration.png', import.meta.url).href;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -56,7 +56,7 @@ const LandingPage = () => {
             </div>
             <div className="md:w-1/2">
               <img
-                src="/src/assets/images/learning_illustration.png"
+                src={imgSrc}
                 alt="Learning illustration"
                 className="rounded-lg max-w-full h-auto"
               />

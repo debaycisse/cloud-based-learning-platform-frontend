@@ -119,7 +119,7 @@ const DashboardPage = () => {
       <DashboardStats progress={progress} />
 
       {/* In Progress Courses */}
-      {progress?.in_progress_courses.length ? (
+      {progress?.in_progress_courses ? (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -137,7 +137,7 @@ const DashboardPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* In progress courses would be displayed here */}
             <div className="card p-4 flex items-center justify-center h-55 bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600">
-              {progress.in_progress_courses.length > 0 ? (
+              {progress.in_progress_courses ? (
                 <CourseCard
                   key={progress?.in_progress_courses}
                   course={inProgressCourseData?.course ? inProgressCourseData?.course : emptyCourse}

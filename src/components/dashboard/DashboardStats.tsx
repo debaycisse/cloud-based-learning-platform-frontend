@@ -9,9 +9,10 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({ progress }) => {
   if (!progress) {
     return null; // If no progress data is available, return nothing
   }
-
+  
   const completedCoursesCount = progress.completed_courses.length;
-  const inProgressCoursesCount = [progress.in_progress_courses].length;
+  const inProgressCoursesCount = 
+  progress.in_progress_courses.length > 0 ? [progress.in_progress_courses].length : 0;
   const completedAssessmentsCount = progress.completed_assessments.length;
 
   return (

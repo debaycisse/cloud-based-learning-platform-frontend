@@ -39,15 +39,21 @@ const MyCoursesPage = () => {
             const theCourseCompleted = progress.completed_courses.
               find((completedCourse) => completedCourse === courseId)
             
-            const theCourseProgress = course_progress.find(cp_obj => cp_obj.course_id === courseId)
+            const theCourseProgress = course_progress.
+              find(cp_obj => cp_obj.course_id === courseId)
 
             const isCompleted = theCourseCompleted? true : false
             const progressPercentage = isCompleted ? 100 : theCourseProgress?.percentage
 
-            return {
-              ...course,
-              progress: progressPercentage,
+            if (course && progressPercentage) {
+              return {
+                ...course,
+                progress: progressPercentage,
+              }
             }
+
+            return null;
+
           } catch (err) {
             console.error(`Error fetching course ${courseId}:`, err)
             return null
@@ -77,6 +83,8 @@ const MyCoursesPage = () => {
     )
   }
 
+  // console.log('Right here');
+  
   if (error) {
     return (
       <div className="p-4">
